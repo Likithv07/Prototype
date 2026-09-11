@@ -1,0 +1,269 @@
+import React, { useState } from 'react';
+import { useApp, AppView } from '../../context/AppContext';
+import { SECTORS_CONFIG } from '../../data/sectorData';
+import { SectorType } from '../../types';
+import {
+  Landmark,
+  Lock,
+  LogOut,
+  Bell,
+  ChevronDown,
+  CheckCircle,
+  Truck,
+  Train,
+  Zap,
+  Building,
+  ShieldCheck,
+  UserCheck,
+  Compass,
+  FileText,
+  Calculator,
+} from 'lucide-react';
+
+export const Navbar: React.FC = () => {
+  const {
+    currentView,
+    setCurrentView,
+    activeSector,
+    setActiveSector,
+    isLoggedIn,
+    loggedInUser,
+    logout,
+    notifications,
+    markNotificationRead,
+    markAllNotificationsRead,
+    showToast,
+  } = useApp();
+
+  const [showNotifs, setShowNotifs] = useState(false);
+  const [showSectorMenu, setShowSectorMenu] = useState(false);
+
+  const unreadCount = notifications.filter((n) => !n.read).length;
+  const currentSectorConfig = SECTORS_CONFIG[activeSector];
+
+  const getSectorIcon = (sec: SectorType) => {
+    switch (sec) {
+      case 'highways':
+        return Truck;
+      case 'railways':
+        return Train;
+      case 'power':
+        return Zap;
+      case 'urban':
+        return Building;
+      case 'revenue':
+        return ShieldCheck;
+      case 'citizen':
+        return UserCheck;
+      default:
+        return Landmark;
+    }
+  };
+
+  const SectorIcon = getSectorIcon(activeSector);
+
+  return (
+    <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-slate-950/90 backdrop-blur-md">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-15 flex items-center justify-between gap-4">
+        {/* Left: Minimal Logo */}
+        <div
+          onClick={() => setCurrentView('landing')}
+          className="flex items-center gap-2.5 cursor-pointer select-none group"
+        >
+          <div className="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <Landmark className="w-4 h-4" />
+          </div>
+          <div>
+            <div className="flex items-center gap-1.5">
+              <span className="text-base font-bold tracking-tight text-white group-hover:text-emerald-300 transition-colors">
+                BhoomiSetu
+              </span>
+              <span className="text-[9px] uppercase font-mono px-1.5 py-0.2 rounded bg-slate-800 text-slate-300 border border-slate-700">
+                National Portal
+              </span>
+            </div>
+            <p className="text-[10px] text-slate-400 hidden sm:block">
+              Land Acquisition & Management System
+            </p>
+          </div>
+        </div>
+
+        {/* Center Navigation Links when on Landing page */}
+        {!isLoggedIn || currentView === 'landing' ? (
+          <nav className="hidden md:flex items-center gap-1 text-xs">
+            <button
+              onClick={() => setCurrentView('landing')}
+              className={`px-3 py-1.5 rounded-md font-medium transition-colors ${
+                currentView === 'landing'
+                  ? 'text-white bg-slate-800'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-900'
+              }`}
+            >
+              About BhoomiSetu
+            </button>
+            <a
+              href="#sectors-section"
+              onClick={() => {
+                if (currentView !== 'landing') setCurrentView('landing');
+              }}
+              className="px-3 py-1.5 rounded-md text-slate-400 hover:text-white hover:bg-slate-900 transition-colors"
+            >
+              Sector Portals
+            </a>
+            <button
+              onClick={() => setCurrentView('gis_map')}
+              className={`px-3 py-1.5 rounded-md font-medium transition-colors ${
+                currentView === 'gis_map'
+                  ? 'text-white bg-slate-800'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-900'
+              }`}
+            >
+              GIS Cadastral Map
+            </button>
+            <button
+              onClick={() => setCurrentView('scope')}
+              className={`px-3 py-1.5 rounded-md font-medium transition-colors ${
+                currentView === 'scope'
+                  ? 'text-white bg-slate-800'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-900'
+              }`}
+            >
+              RFCTLARR Statutory Scope
+            </button>
+          </nav>
+        ) : (
+          /* When logged in, center displays the active sector info */
+          <div className="hidden md:flex items-center gap-2 text-xs">
+            <span className="text-slate-400">Active Sector:</span>
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-900 border border-slate-800 text-slate-200">
+              <SectorIcon className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="font-semibold">{currentSectorConfig.name}</span>
+            </div>
+          </div>
+        )}
+
+        {/* Right Corner Section */}
+        <div className="flex items-center gap-3">
+          {/* If NOT logged in: Prominently Highlighted Login Button in the Right Corner */}
+          {!isLoggedIn ? (
+            <button
+              onClick={() => setCurrentView('login')}
+              id="navbar-login-btn"
+              className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-sm hover:shadow transition-all flex items-center gap-2"
+            >
+              <Lock className="w-3.5 h-3.5" />
+              <span>Login</span>
+            </button>
+          ) : (
+            /* If logged in: Sector switcher, Notification bell, and Log Out */
+            <div className="flex items-center gap-2 sm:gap-3">
+              {/* Notification Bell */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowNotifs(!showNotifs)}
+                  className="relative p-2 rounded-lg border border-slate-800 bg-slate-900 text-slate-300 hover:text-white hover:border-slate-700 transition-colors"
+                  title="Notifications"
+                >
+                  <Bell className="w-4 h-4" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-slate-950">
+                      {unreadCount}
+                    </span>
+                  )}
+                </button>
+
+                {showNotifs && (
+                  <div className="absolute right-0 mt-2 w-80 rounded-xl bg-slate-900 border border-slate-800 p-3 shadow-xl z-50">
+                    <div className="flex items-center justify-between pb-2 border-b border-slate-800 mb-2">
+                      <span className="text-xs font-semibold text-white">Notifications</span>
+                      <button
+                        onClick={markAllNotificationsRead}
+                        className="text-[11px] text-emerald-400 hover:underline"
+                      >
+                        Mark all read
+                      </button>
+                    </div>
+                    <div className="space-y-1.5 max-h-60 overflow-y-auto pr-1 text-xs">
+                      {notifications.map((n) => (
+                        <div
+                          key={n.id}
+                          onClick={() => {
+                            markNotificationRead(n.id);
+                            if (n.linkView) setCurrentView(n.linkView as AppView);
+                            setShowNotifs(false);
+                          }}
+                          className={`p-2 rounded border cursor-pointer ${
+                            n.read
+                              ? 'bg-slate-950/40 border-slate-800/80 text-slate-400'
+                              : 'bg-slate-800/50 border-slate-700 text-slate-200'
+                          }`}
+                        >
+                          <div className="font-medium text-white">{n.title}</div>
+                          <p className="text-[11px] text-slate-400 line-clamp-2">{n.message}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Sector Quick Switcher Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowSectorMenu(!showSectorMenu)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900 text-xs font-medium text-slate-300 hover:text-white"
+                >
+                  <SectorIcon className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="hidden sm:inline">{currentSectorConfig.shortName}</span>
+                  <ChevronDown className="w-3 h-3 text-slate-400" />
+                </button>
+
+                {showSectorMenu && (
+                  <div className="absolute right-0 mt-2 w-56 rounded-xl bg-slate-900 border border-slate-800 p-2 shadow-xl z-50 text-xs">
+                    <div className="px-2 py-1 text-[10px] uppercase font-mono tracking-wider text-slate-400 border-b border-slate-800 mb-1">
+                      Switch Sector
+                    </div>
+                    {(['highways', 'railways', 'power', 'urban', 'revenue', 'citizen'] as SectorType[]).map((s) => {
+                      const sec = SECTORS_CONFIG[s];
+                      const IconComp = getSectorIcon(s);
+                      return (
+                        <button
+                          key={s}
+                          onClick={() => {
+                            setActiveSector(s);
+                            setShowSectorMenu(false);
+                            setCurrentView('dashboard');
+                            showToast(`Active sector set to ${sec.name}`, 'info');
+                          }}
+                          className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded text-left ${
+                            activeSector === s
+                              ? 'bg-emerald-500/15 text-emerald-300 font-semibold'
+                              : 'text-slate-300 hover:bg-slate-800'
+                          }`}
+                        >
+                          <IconComp className="w-3.5 h-3.5" />
+                          <span>{sec.shortName}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Highlighted Log Out Button */}
+              <button
+                onClick={logout}
+                id="navbar-logout-btn"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs font-medium transition-colors"
+                title="Log Out to BhoomiSetu Landing Page"
+              >
+                <LogOut className="w-3.5 h-3.5 text-slate-400" />
+                <span className="hidden sm:inline">Log Out</span>
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </header>
+  );
+};
