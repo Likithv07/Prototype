@@ -197,18 +197,18 @@ export const ProjectDetails: React.FC = () => {
             </p>
           </div>
           <span className="text-xs font-mono text-cyan-400 bg-cyan-950/60 px-3 py-1 rounded-full border border-cyan-500/30">
-            Current: Stage {project.stages.find((s) => s.status === 'In Progress')?.stageNumber || 7}
+            Current: Stage {project.lifecycle.find((s) => s.status === 'In Progress')?.id || 1}
           </span>
         </div>
 
         <div className="relative pl-6 sm:pl-8 space-y-8 before:absolute before:left-3 sm:before:left-4 before:top-3 before:bottom-3 before:w-0.5 before:bg-gradient-to-b before:from-emerald-500 before:via-cyan-400 before:to-slate-800">
-          {project.stages.map((stage) => {
+          {project.lifecycle.map((stage) => {
             const isCompleted = stage.status === 'Completed';
             const isInProgress = stage.status === 'In Progress';
             const isDelayed = stage.status === 'Delayed';
 
             return (
-              <div key={stage.stageNumber} className="relative group">
+              <div key={stage.id} className="relative group">
                 {/* Node icon */}
                 <div
                   className={`absolute -left-6 sm:-left-8 top-1 w-6 h-6 sm:w-8 sm:h-8 rounded-full border flex items-center justify-center bg-[#071A2D] z-10 transition-all ${
@@ -222,7 +222,7 @@ export const ProjectDetails: React.FC = () => {
                   }`}
                 >
                   <span className="text-[11px] font-mono font-bold">
-                    {stage.stageNumber}
+                    {stage.id}
                   </span>
                 </div>
 
@@ -241,23 +241,23 @@ export const ProjectDetails: React.FC = () => {
                     </div>
 
                     <div className="flex items-center gap-3 text-xs font-mono">
-                      <span className="text-slate-400">{stage.date}</span>
+                      <span className="text-slate-400">{stage.completedDate || stage.targetDate || '—'}</span>
                     </div>
                   </div>
 
                   <p className="text-xs text-slate-300 leading-relaxed mb-3">
-                    {stage.notes}
+                    {stage.description}
                   </p>
 
                   <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800/80 text-xs">
                     <div className="flex items-center gap-1.5 text-slate-400">
                       <UserCheck className="w-3.5 h-3.5 text-cyan-400" />
                       <span>Authorized Officer: </span>
-                      <span className="text-white font-medium">{stage.officerName}</span>
+                      <span className="text-white font-medium">{stage.officerInCharge || 'Not assigned'}</span>
                     </div>
 
                     {/* Quick Action Button for In-Progress Stages */}
-                    {isInProgress && stage.stageNumber === 7 && (
+                    {isInProgress && stage.id === 7 && (
                       <button
                         onClick={() => {
                           setUserRole('officer');
@@ -268,7 +268,7 @@ export const ProjectDetails: React.FC = () => {
                         Action Award Approval →
                       </button>
                     )}
-                    {isInProgress && stage.stageNumber === 3 && (
+                    {isInProgress && stage.id === 3 && (
                       <button
                         onClick={() => {
                           setUserRole('field_officer');
