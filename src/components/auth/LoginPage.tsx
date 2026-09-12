@@ -19,8 +19,8 @@ import {
   CheckCircle2,
   X,
   AlertCircle,
-  Sparkles,
   ArrowLeft,
+  Landmark,
 } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
@@ -38,7 +38,7 @@ export const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Forgot Password modal state
+  // Forgot Password state
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [forgotStep, setForgotStep] = useState<'request' | 'verify'>('request');
   const [forgotContact, setForgotContact] = useState('');
@@ -59,7 +59,7 @@ export const LoginPage: React.FC = () => {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (!username.trim()) {
-      showToast('Please enter your username or official email', 'warning');
+      showToast('Please enter your username or email', 'warning');
       return;
     }
     if (!password.trim()) {
@@ -71,7 +71,7 @@ export const LoginPage: React.FC = () => {
     setTimeout(() => {
       setIsLoading(false);
       loginAsSector(selectedSector, username);
-    }, 450);
+    }, 350);
   };
 
   const handleSendOtp = (e: React.FormEvent) => {
@@ -81,14 +81,14 @@ export const LoginPage: React.FC = () => {
       return;
     }
     setForgotStep('verify');
-    setOtpCode('849201'); // Pre-fill or demo helper
-    showToast('Verification code dispatched. (Demo Code: 849201)', 'info');
+    setOtpCode('849201'); // Pre-fill demo helper
+    showToast('Verification code sent. (Demo OTP: 849201)', 'info');
   };
 
   const handleResetPassword = (e: React.FormEvent) => {
     e.preventDefault();
     if (otpCode !== '849201' && otpCode.length < 6) {
-      showToast('Invalid verification code', 'danger');
+      showToast('Invalid verification code. Please enter 849201', 'danger');
       return;
     }
     if (!newPassword || newPassword.length < 6) {
@@ -103,8 +103,11 @@ export const LoginPage: React.FC = () => {
     setPassword(newPassword);
     setShowForgotPassword(false);
     setForgotStep('request');
-    showToast('Password reset successfully! Logging you in...', 'success');
-    loginAsSector(selectedSector, username || forgotContact);
+    setForgotContact('');
+    setOtpCode('');
+    setNewPassword('');
+    setConfirmPassword('');
+    showToast('Password reset successfully. You can now sign in.', 'success');
   };
 
   const getSectorIcon = (sec: SectorType) => {
@@ -129,211 +132,230 @@ export const LoginPage: React.FC = () => {
   const SectorIcon = getSectorIcon(selectedSector);
 
   return (
-    <div className="min-h-[80vh] flex flex-col items-center justify-center px-4 py-8 max-w-2xl mx-auto">
-      {/* Back to Home Link */}
-      <div className="w-full mb-4 flex items-center justify-between">
+    <div className="min-h-[80vh] flex flex-col justify-center items-center py-6 px-4">
+      {/* Return back button */}
+      <div className="w-full max-w-xl mb-4 flex items-center justify-between">
         <button
           onClick={() => setCurrentView('landing')}
-          className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors"
+          className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
         >
-          <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Back to BhoomiSetu Home</span>
+          <ArrowLeft className="w-4 h-4" />
+          <span>Back to BhoomiSetu Homepage</span>
         </button>
-        <span className="text-[11px] text-slate-400 font-mono">
-          BhoomiSetu v2.6 • RFCTLARR 2013
+        <span className="text-[11px] text-slate-500 font-medium">
+          Official Government Portal
         </span>
       </div>
 
-      {/* Main Minimal Login Card */}
-      <div className="w-full bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm backdrop-blur-sm">
-        <div className="flex items-start justify-between gap-4 mb-6">
+      {/* Main Login Card in Clean White & Slate-50 */}
+      <div className="w-full max-w-xl bg-white border border-slate-200/90 rounded-2xl shadow-xs overflow-hidden">
+        {/* Header bar */}
+        <div className="p-6 sm:p-8 border-b border-slate-100 bg-slate-50/70">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
-              <SectorIcon className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-blue-900 text-white flex items-center justify-center shadow-xs">
+              <Landmark className="w-5 h-5" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-white">
-                Sector Portal Login
+              <h1 className="text-xl font-bold text-slate-900 tracking-tight">
+                Sector Official Sign In
               </h1>
-              <p className="text-xs text-slate-400">
-                Authenticate to access your sector-specific land acquisition console
+              <p className="text-xs text-slate-500 mt-0.5 font-medium">
+                BhoomiSetu National Land Acquisition & Management Portal
               </p>
             </div>
           </div>
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-emerald-400 border border-slate-700">
-            {currentSectorConfig.badge}
-          </span>
         </div>
 
-        {/* 1. Sector Selector */}
-        <div className="mb-6 space-y-2">
-          <label className="text-xs font-semibold text-slate-300 block">
-            Select Infrastructure / Administrative Sector
-          </label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {(['highways', 'railways', 'power', 'urban', 'revenue', 'citizen'] as SectorType[]).map((secKey) => {
-              const item = SECTORS_CONFIG[secKey];
-              const isSelected = selectedSector === secKey;
-              const IconComp = getSectorIcon(secKey);
-              return (
-                <button
-                  key={secKey}
-                  type="button"
-                  id={`login-select-sector-${secKey}`}
-                  onClick={() => setSelectedSector(secKey)}
-                  className={`p-2.5 rounded-lg text-left transition-all border flex items-center gap-2 ${
-                    isSelected
-                      ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-300'
-                      : 'bg-slate-950/40 border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
-                  }`}
-                >
-                  <IconComp className="w-4 h-4 shrink-0" />
-                  <span className="text-xs font-medium truncate">{item.shortName}</span>
-                </button>
-              );
-            })}
-          </div>
-          <p className="text-[11px] text-slate-400 pt-0.5">
-            {currentSectorConfig.department}
-          </p>
-        </div>
-
-        {/* 2. Login Form */}
-        <form onSubmit={handleLogin} className="space-y-4">
-          {/* Username */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-300 block">
-              Official Username / Email ID
+        <div className="p-6 sm:p-8 space-y-6">
+          {/* Step 1: Select Sector */}
+          <div className="space-y-2">
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
+              1. Select Your Infrastructure / Administrative Sector
             </label>
-            <div className="relative">
-              <User className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
-              <input
-                type="text"
-                id="login-username-input"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="officer.id@gov.in"
-                className="w-full pl-9 pr-3 py-2.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
-                required
-              />
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {(['highways', 'railways', 'power', 'urban', 'revenue', 'citizen'] as SectorType[]).map((secKey) => {
+                const sec = SECTORS_CONFIG[secKey];
+                const Icon = getSectorIcon(secKey);
+                const isSelected = selectedSector === secKey;
+
+                return (
+                  <button
+                    key={secKey}
+                    type="button"
+                    onClick={() => {
+                      setSelectedSector(secKey);
+                      setActiveSector(secKey);
+                    }}
+                    className={`p-2.5 rounded-xl border text-left flex items-center gap-2.5 transition-all ${
+                      isSelected
+                        ? 'border-blue-600 bg-blue-50/70 text-blue-950 ring-1 ring-blue-600 font-bold shadow-2xs'
+                        : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700'
+                    }`}
+                  >
+                    <div
+                      className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
+                        isSelected ? 'bg-blue-700 text-white' : 'bg-slate-100 text-slate-600'
+                      }`}
+                    >
+                      <Icon className="w-3.5 h-3.5" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-xs font-bold block truncate">{sec.shortName}</span>
+                      <span className="text-[10px] text-slate-500 block truncate">{sec.badge}</span>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Password */}
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold text-slate-300 block">
-                Password
-              </label>
-              {/* Highlighted Forgot Password Button */}
-              <button
-                type="button"
-                id="forgot-password-btn"
-                onClick={() => {
-                  setForgotContact(username);
-                  setShowForgotPassword(true);
-                }}
-                className="text-xs font-medium text-emerald-400 hover:text-emerald-300 hover:underline transition-colors"
-              >
-                Forgot Password?
-              </button>
+          {/* Active Sector Summary Pill */}
+          <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-3 text-xs">
+            <SectorIcon className="w-5 h-5 text-blue-700 shrink-0" />
+            <div className="min-w-0 flex-1">
+              <span className="font-bold text-slate-900 block">{currentSectorConfig.name}</span>
+              <span className="text-[11px] text-slate-500 block truncate">
+                {currentSectorConfig.department}
+              </span>
             </div>
-            <div className="relative">
-              <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
-              <input
-                type={showPassword ? 'text' : 'password'}
-                id="login-password-input"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••••••"
-                className="w-full pl-9 pr-10 py-2.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-2.5 text-slate-500 hover:text-slate-300"
-              >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
-          </div>
-
-          {/* Quick 1-Click Demo Helper Bar */}
-          <div className="pt-2">
-            <span className="text-[11px] text-slate-400 block mb-1.5 font-medium">
-              Quick demo authentication:
+            <span className="px-2 py-0.5 rounded bg-blue-100 text-blue-900 font-bold text-[10px] shrink-0 border border-blue-200">
+              {currentSectorConfig.badge}
             </span>
-            <div className="flex flex-wrap gap-1.5">
-              {(['highways', 'railways', 'power', 'urban', 'revenue', 'citizen'] as SectorType[]).map((secKey) => (
-                <button
-                  key={secKey}
-                  type="button"
-                  onClick={() => {
-                    setSelectedSector(secKey);
-                    loginAsSector(secKey, SECTORS_CONFIG[secKey].demoUsername);
-                  }}
-                  className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[10px] font-medium border border-slate-700 transition-colors"
-                >
-                  {SECTORS_CONFIG[secKey].shortName}
-                </button>
-              ))}
-            </div>
           </div>
 
-          {/* Primary Submit Button */}
-          <button
-            type="submit"
-            id="login-submit-btn"
-            disabled={isLoading}
-            className="mt-4 w-full py-2.5 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-semibold text-xs shadow-sm transition-all flex items-center justify-center gap-2"
-          >
-            {isLoading ? (
-              <span>Authenticating Session...</span>
-            ) : (
-              <>
-                <span>Log In to {currentSectorConfig.shortName} Dashboard</span>
-                <ArrowRight className="w-4 h-4" />
-              </>
-            )}
-          </button>
-        </form>
+          {/* Step 2: Username & Password Form */}
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-700 block">
+                Official Username or Email
+              </label>
+              <div className="relative">
+                <User className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="e.g. officer.nhai@nic.in"
+                  className="w-full pl-9 pr-3 py-2.5 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-slate-700 block">
+                  Password
+                </label>
+                {/* Forgot password button prominently highlighted */}
+                <button
+                  type="button"
+                  onClick={() => setShowForgotPassword(true)}
+                  id="forgot-password-link"
+                  className="text-xs font-bold text-blue-700 hover:text-blue-800 hover:underline"
+                >
+                  Forgot Password?
+                </button>
+              </div>
+              <div className="relative">
+                <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your security password"
+                  className="w-full pl-9 pr-10 py-2.5 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3 text-slate-400 hover:text-slate-600"
+                  title={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            {/* Quick 1-Click Demo Credentials Pill */}
+            <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs flex items-center justify-between gap-2">
+              <span className="text-[11px] text-slate-500">
+                Demo: <strong>{currentSectorConfig.demoUsername}</strong> / <strong>{currentSectorConfig.demoPassword}</strong>
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setUsername(currentSectorConfig.demoUsername);
+                  setPassword(currentSectorConfig.demoPassword);
+                  showToast('Pre-filled test credentials', 'info');
+                }}
+                className="text-[11px] font-bold text-blue-700 hover:underline shrink-0"
+              >
+                Auto-fill
+              </button>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              id="login-submit-btn"
+              disabled={isLoading}
+              className="w-full py-2.5 px-4 rounded-lg bg-blue-700 hover:bg-blue-800 text-white font-semibold text-xs shadow-2xs transition-all flex items-center justify-center gap-2"
+            >
+              {isLoading ? (
+                <span>Authenticating with BhoomiSetu...</span>
+              ) : (
+                <>
+                  <Lock className="w-3.5 h-3.5" />
+                  <span>Sign In to {currentSectorConfig.shortName} Dashboard</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </>
+              )}
+            </button>
+          </form>
+        </div>
       </div>
 
-      {/* Forgot Password Modal */}
+      {/* Interactive Forgot Password Modal in Clean Light Theme */}
       {showForgotPassword && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl space-y-4">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-800">
+        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 max-w-md w-full shadow-lg space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
-                <KeyRound className="w-4 h-4 text-emerald-400" />
-                <h2 className="text-sm font-bold text-white">
-                  Reset Sector Account Password
-                </h2>
+                <KeyRound className="w-4 h-4 text-blue-700" />
+                <h3 className="text-sm font-bold text-slate-900">
+                  Password Recovery: {currentSectorConfig.shortName}
+                </h3>
               </div>
               <button
-                onClick={() => setShowForgotPassword(false)}
-                className="text-slate-400 hover:text-white"
+                onClick={() => {
+                  setShowForgotPassword(false);
+                  setForgotStep('request');
+                }}
+                className="text-slate-400 hover:text-slate-600"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {forgotStep === 'request' ? (
-              <form onSubmit={handleSendOtp} className="space-y-3 text-xs">
-                <p className="text-slate-300">
-                  Enter your registered official email or mobile number for{' '}
-                  <strong className="text-emerald-400">{currentSectorConfig.name}</strong> to receive a statutory verification code.
+              <form onSubmit={handleSendOtp} className="space-y-3">
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Enter your registered official email or mobile number linked to the{' '}
+                  <strong className="text-slate-900">{currentSectorConfig.name}</strong> portal.
                 </p>
 
                 <div className="space-y-1">
-                  <label className="font-semibold text-slate-300">Registered Email / Mobile</label>
+                  <label className="text-[11px] font-semibold text-slate-700">
+                    Official Email / Mobile
+                  </label>
                   <input
                     type="text"
                     value={forgotContact}
                     onChange={(e) => setForgotContact(e.target.value)}
-                    placeholder="officer.nhai@morth.gov.in"
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded text-xs text-white focus:outline-none focus:border-emerald-500"
+                    placeholder="e.g. officer.nhai@nic.in or 9876543210"
+                    className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600"
                     required
                   />
                 </div>
@@ -342,58 +364,72 @@ export const LoginPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowForgotPassword(false)}
-                    className="px-3 py-1.5 rounded bg-slate-800 text-slate-300 hover:bg-slate-700"
+                    className="px-3 py-1.5 rounded-lg border border-slate-300 text-xs text-slate-700 hover:bg-slate-50 font-medium"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-1.5 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-medium"
+                    className="px-4 py-1.5 rounded-lg bg-blue-700 hover:bg-blue-800 text-white font-semibold text-xs transition-colors shadow-2xs"
                   >
-                    Send Verification Code
+                    Send OTP Code
                   </button>
                 </div>
               </form>
             ) : (
-              <form onSubmit={handleResetPassword} className="space-y-3 text-xs">
-                <div className="p-2.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-[11px]">
-                  Verification code sent to <strong>{forgotContact}</strong>.
-                  <span className="block mt-0.5 text-slate-400">Demo Code: <strong>849201</strong></span>
+              <form onSubmit={handleResetPassword} className="space-y-3">
+                <div className="p-2.5 rounded-lg bg-blue-50 border border-blue-200 text-xs text-blue-900">
+                  OTP sent to <strong>{forgotContact}</strong>. Use demo OTP code: <strong>849201</strong>
                 </div>
 
                 <div className="space-y-1">
-                  <label className="font-semibold text-slate-300">6-Digit Verification Code</label>
-                  <input
-                    type="text"
-                    value={otpCode}
-                    onChange={(e) => setOtpCode(e.target.value)}
-                    placeholder="849201"
-                    maxLength={6}
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded font-mono text-center tracking-widest text-sm text-emerald-400 focus:outline-none focus:border-emerald-500"
-                    required
-                  />
+                  <label className="text-[11px] font-semibold text-slate-700">
+                    Enter 6-Digit OTP Code
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={otpCode}
+                      onChange={(e) => setOtpCode(e.target.value)}
+                      placeholder="849201"
+                      maxLength={6}
+                      className="flex-1 px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-mono text-slate-900 focus:outline-none focus:border-blue-600"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setOtpCode('849201')}
+                      className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs rounded-lg border border-slate-300 font-medium"
+                    >
+                      Fill Demo OTP
+                    </button>
+                  </div>
                 </div>
 
                 <div className="space-y-1">
-                  <label className="font-semibold text-slate-300">New Password</label>
+                  <label className="text-[11px] font-semibold text-slate-700">
+                    New Security Password
+                  </label>
                   <input
                     type="password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="Min. 6 characters"
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded text-xs text-white focus:outline-none focus:border-emerald-500"
+                    placeholder="At least 6 characters"
+                    className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:border-blue-600"
                     required
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="font-semibold text-slate-300">Confirm New Password</label>
+                  <label className="text-[11px] font-semibold text-slate-700">
+                    Confirm New Password
+                  </label>
                   <input
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Repeat password"
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded text-xs text-white focus:outline-none focus:border-emerald-500"
+                    placeholder="Re-type new password"
+                    className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:border-blue-600"
                     required
                   />
                 </div>
@@ -402,15 +438,15 @@ export const LoginPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setForgotStep('request')}
-                    className="px-3 py-1.5 rounded bg-slate-800 text-slate-300 hover:bg-slate-700"
+                    className="px-3 py-1.5 rounded-lg border border-slate-300 text-xs text-slate-700 hover:bg-slate-50 font-medium"
                   >
                     Back
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-1.5 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-medium"
+                    className="px-4 py-1.5 rounded-lg bg-blue-700 hover:bg-blue-800 text-white font-semibold text-xs transition-colors shadow-2xs"
                   >
-                    Reset & Sign In
+                    Reset & Apply Password
                   </button>
                 </div>
               </form>

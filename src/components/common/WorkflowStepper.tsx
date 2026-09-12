@@ -32,11 +32,11 @@ export const WorkflowStepper: React.FC = () => {
   ];
 
   return (
-    <div className="w-full bg-[#0B1E36]/90 border-b border-cyan-500/20 backdrop-blur-md px-4 py-2 overflow-x-auto select-none">
+    <div className="w-full bg-white border-b border-slate-200 px-4 py-2 overflow-x-auto select-none shadow-xs">
       <div className="max-w-7xl mx-auto flex items-center justify-between min-w-[860px] text-xs">
-        <div className="flex items-center gap-2 mr-3 pr-3 border-r border-slate-700/60 shrink-0">
-          <span className="flex h-2 w-2 rounded-full bg-cyan-400 animate-ping" />
-          <span className="font-tech text-xs tracking-wider text-cyan-400 font-semibold uppercase">
+        <div className="flex items-center gap-2 mr-3 pr-3 border-r border-slate-200 shrink-0">
+          <span className="flex h-2 w-2 rounded-full bg-blue-600" />
+          <span className="text-xs tracking-wider text-blue-900 font-bold uppercase">
             National Lifecycle
           </span>
         </div>
@@ -50,25 +50,25 @@ export const WorkflowStepper: React.FC = () => {
                 <button
                   id={`workflow-step-${s.stepNumber}`}
                   onClick={() => setCurrentView(s.view)}
-                  className={`flex items-center gap-1.5 px-2 py-1 rounded-lg transition-all duration-200 group ${
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-all duration-150 group ${
                     isActive
-                      ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-[0_0_12px_rgba(34,211,238,0.25)]'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                      ? 'bg-blue-50 text-blue-950 border border-blue-300 font-bold shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium'
                   }`}
                   title={`Jump to ${s.label}`}
                 >
                   <span
-                    className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-mono ${
-                      isActive ? 'bg-cyan-500 text-slate-950 font-bold' : 'bg-slate-800 text-slate-400'
+                    className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${
+                      isActive ? 'bg-blue-700 text-white font-bold' : 'bg-slate-100 text-slate-500 font-semibold'
                     }`}
                   >
                     {s.stepNumber}
                   </span>
                   <Icon className="w-3.5 h-3.5" />
-                  <span className="font-medium tracking-tight whitespace-nowrap">{s.label}</span>
+                  <span className="text-xs whitespace-nowrap">{s.label}</span>
                 </button>
                 {idx < steps.length - 1 && (
-                  <span className="text-slate-700 select-none">›</span>
+                  <span className="text-slate-300 select-none">›</span>
                 )}
               </React.Fragment>
             );

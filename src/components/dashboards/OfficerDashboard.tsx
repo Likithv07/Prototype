@@ -33,18 +33,18 @@ export const OfficerDashboard: React.FC = () => {
   return (
     <div className="space-y-6 pb-16">
       {/* Top Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
-            <span className="text-xs uppercase font-mono text-cyan-400 font-semibold tracking-wider">
+            <span className="w-2.5 h-2.5 rounded-full bg-blue-600" />
+            <span className="text-xs uppercase font-mono text-blue-900 font-bold tracking-wider">
               District Revenue Administration • Medchal-Malkajgiri
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mt-1">
             District Land Acquisition Dashboard
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400">
+          <p className="text-xs sm:text-sm text-slate-600 mt-0.5">
             Office of the Special Land Acquisition Officer (Competent Authority under NH Act & RFCTLARR)
           </p>
         </div>
@@ -52,7 +52,7 @@ export const OfficerDashboard: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setCurrentView('compensation')}
-            className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white text-xs font-semibold flex items-center gap-2 shadow-[0_0_15px_rgba(37,99,235,0.4)]"
+            className="px-4 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-semibold flex items-center gap-2 shadow-2xs active:scale-98 transition-all"
           >
             <Calculator className="w-4 h-4" />
             <span>Open Award Calculator</span>
@@ -93,25 +93,25 @@ export const OfficerDashboard: React.FC = () => {
       </div>
 
       {/* Table of Land Parcels awaiting review */}
-      <GlassCard className="p-6">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+      <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-2xs">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
           <div>
-            <h2 className="text-base font-bold text-white flex items-center gap-2">
-              <Calculator className="w-4 h-4 text-cyan-400" />
+            <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+              <Calculator className="w-4 h-4 text-blue-700" />
               <span>Survey Parcels Awaiting Valuation Hearing & Award</span>
             </h2>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500 mt-0.5">
               Joint measurement confirmed parcels pending statutory award determination
             </p>
           </div>
-          <span className="text-xs font-mono text-cyan-300">
+          <span className="text-xs font-mono font-bold text-blue-900 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-lg">
             {pendingCompensation.length} Pending Actions
           </span>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-slate-300">
-            <thead className="bg-slate-900/80 text-slate-400 font-mono text-[11px] uppercase border-b border-slate-800">
+          <table className="w-full text-left text-xs text-slate-700">
+            <thead className="bg-slate-50 text-slate-700 font-semibold text-[11px] uppercase border-y border-slate-200">
               <tr>
                 <th className="py-3 px-4">Parcel ID</th>
                 <th className="py-3 px-4">Landowner Legal Entity</th>
@@ -123,7 +123,7 @@ export const OfficerDashboard: React.FC = () => {
                 <th className="py-3 px-4 text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60">
+            <tbody className="divide-y divide-slate-100 font-medium">
               {pendingCompensation.map((parcel) => (
                 <tr
                   key={parcel.id}
@@ -131,37 +131,37 @@ export const OfficerDashboard: React.FC = () => {
                     setSelectedParcelId(parcel.id);
                     setCurrentView('compensation');
                   }}
-                  className="hover:bg-cyan-500/5 transition-colors cursor-pointer group"
+                  className="hover:bg-slate-50/80 transition-colors cursor-pointer group"
                 >
-                  <td className="py-3 px-4 font-mono font-bold text-cyan-400 whitespace-nowrap">
+                  <td className="py-3.5 px-4 font-mono font-bold text-blue-900 whitespace-nowrap">
                     {parcel.id}
                   </td>
-                  <td className="py-3 px-4 font-semibold text-white">
+                  <td className="py-3.5 px-4 font-semibold text-slate-900">
                     {parcel.landownerName}
                   </td>
-                  <td className="py-3 px-4 font-mono text-slate-300">
+                  <td className="py-3.5 px-4 font-mono text-slate-600">
                     Sy {parcel.surveyNumber}
                   </td>
-                  <td className="py-3 px-4 font-tech text-sm text-slate-200">
+                  <td className="py-3.5 px-4 text-slate-800 font-semibold">
                     {parcel.areaAcres} Acres
                   </td>
-                  <td className="py-3 px-4 font-mono text-slate-300">
+                  <td className="py-3.5 px-4 font-mono text-slate-600">
                     ₹{(parcel.compensation?.governmentRatePerAcre || parcel.marketValuePerAcre || 0).toLocaleString('en-IN')}/Ac
                   </td>
-                  <td className="py-3 px-4 font-tech text-sm font-bold text-emerald-400">
+                  <td className="py-3.5 px-4 font-bold text-emerald-700">
                     ₹{(parcel.compensation?.totalCompensation || parcel.totalCompensation || 0).toLocaleString('en-IN')}
                   </td>
-                  <td className="py-3 px-4">
+                  <td className="py-3.5 px-4">
                     <StatusBadge status={parcel.compensationStatus} />
                   </td>
-                  <td className="py-3 px-4 text-right whitespace-nowrap">
+                  <td className="py-3.5 px-4 text-right whitespace-nowrap">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         setSelectedParcelId(parcel.id);
                         setCurrentView('compensation');
                       }}
-                      className="px-3 py-1 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 text-xs font-semibold inline-flex items-center gap-1 transition-all"
+                      className="px-3 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 text-xs font-semibold inline-flex items-center gap-1 transition-colors"
                     >
                       <span>Review & Approve</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -172,7 +172,7 @@ export const OfficerDashboard: React.FC = () => {
             </tbody>
           </table>
         </div>
-      </GlassCard>
+      </div>
     </div>
   );
 };

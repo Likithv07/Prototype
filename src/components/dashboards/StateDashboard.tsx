@@ -102,18 +102,18 @@ export const StateDashboard: React.FC = () => {
   return (
     <div className="space-y-6 pb-12">
       {/* Top Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-purple-500 animate-pulse" />
-            <span className="text-xs uppercase font-mono text-purple-400 font-semibold tracking-wider">
+            <span className="w-2.5 h-2.5 rounded-full bg-blue-700" />
+            <span className="text-xs uppercase font-mono text-blue-900 font-bold tracking-wider">
               State Land Revenue & Acquisition Directorate
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mt-1">
             {currentState.name} State Overview
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400">
+          <p className="text-xs sm:text-sm text-slate-600 mt-0.5">
             District-wise progress, land consolidation, and statutory revenue awards.
           </p>
         </div>
@@ -125,7 +125,7 @@ export const StateDashboard: React.FC = () => {
               setSelectedStateId(e.target.value);
               showToast(`Loaded data for ${e.target.value} State`, 'info');
             }}
-            className="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs font-semibold focus:border-cyan-400 focus:outline-none"
+            className="px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-800 text-xs font-semibold focus:border-blue-700 focus:outline-none shadow-2xs"
           >
             {STATES_DATA.map((st) => (
               <option key={st.id} value={st.id}>
@@ -140,7 +140,7 @@ export const StateDashboard: React.FC = () => {
               setCurrentView('compensation');
               showToast('Switched to District LAO Portal for award approvals', 'info');
             }}
-            className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white text-xs font-semibold flex items-center gap-2 shadow-[0_0_15px_rgba(37,99,235,0.4)]"
+            className="px-4 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-semibold flex items-center gap-2 shadow-2xs active:scale-98 transition-all"
           >
             <span>Review Collector Awards</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -195,14 +195,14 @@ export const StateDashboard: React.FC = () => {
       </div>
 
       {/* District-wise Progress Table */}
-      <GlassCard className="p-6">
+      <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-2xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
-            <h2 className="text-lg font-bold text-white flex items-center gap-2">
-              <Building2 className="w-5 h-5 text-cyan-400" />
+            <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <Building2 className="w-5 h-5 text-blue-700" />
               <span>District-Wise Acquisition Performance</span>
             </h2>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500 mt-0.5">
               Live metrics across revenue districts for {currentState.name}
             </p>
           </div>
@@ -215,7 +215,7 @@ export const StateDashboard: React.FC = () => {
                 value={searchDistrict}
                 onChange={(e) => setSearchDistrict(e.target.value)}
                 placeholder="Search district..."
-                className="pl-8 pr-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-700 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400"
+                className="pl-8 pr-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-700 focus:bg-white transition-all"
               />
             </div>
           </div>
@@ -223,8 +223,8 @@ export const StateDashboard: React.FC = () => {
 
         {/* Table */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-slate-300">
-            <thead className="bg-slate-900/80 text-slate-400 font-mono text-[11px] uppercase border-b border-slate-800">
+          <table className="w-full text-left text-xs text-slate-700">
+            <thead className="bg-slate-50 text-slate-700 font-semibold text-[11px] uppercase border-y border-slate-200">
               <tr>
                 <th className="py-3 px-4">District</th>
                 <th className="py-3 px-4">Projects</th>
@@ -235,49 +235,49 @@ export const StateDashboard: React.FC = () => {
                 <th className="py-3 px-4 text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60">
+            <tbody className="divide-y divide-slate-100 font-medium">
               {filteredDistricts.map((row) => (
                 <tr
                   key={row.district}
-                  className="hover:bg-cyan-500/5 transition-colors group cursor-pointer"
+                  className="hover:bg-slate-50/80 transition-colors group cursor-pointer"
                   onClick={() => {
                     setSelectedProjectId('NLA-TS-2026-001');
                     setCurrentView('projects');
                   }}
                 >
-                  <td className="py-3 px-4 font-semibold text-white">
+                  <td className="py-3.5 px-4 font-semibold text-slate-900">
                     <div className="flex items-center gap-2">
-                      <MapPin className="w-3.5 h-3.5 text-cyan-400" />
+                      <MapPin className="w-3.5 h-3.5 text-blue-700" />
                       <span>{row.district}</span>
                     </div>
                   </td>
-                  <td className="py-3 px-4 font-tech text-sm text-slate-200">
+                  <td className="py-3.5 px-4 text-slate-700 font-medium">
                     {row.projects} Projects
                   </td>
-                  <td className="py-3 px-4 font-tech text-sm text-slate-200">
-                    <span className="text-emerald-400 font-bold">{row.landAcquired}</span> /{' '}
+                  <td className="py-3.5 px-4 text-slate-700 font-medium">
+                    <span className="text-emerald-700 font-bold">{row.landAcquired}</span> /{' '}
                     {row.landProposed} Acres
                   </td>
-                  <td className="py-3 px-4 font-tech text-sm text-purple-400 font-bold">
+                  <td className="py-3.5 px-4 text-indigo-700 font-bold">
                     ₹{row.compensationCr} Cr
                   </td>
-                  <td className="py-3 px-4 w-40">
+                  <td className="py-3.5 px-4 w-40">
                     <div className="flex items-center gap-2">
-                      <div className="flex-1 h-2 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+                      <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full"
+                          className="h-full bg-blue-700 rounded-full"
                           style={{ width: `${row.progress}%` }}
                         />
                       </div>
-                      <span className="text-[11px] font-mono font-bold text-white">
+                      <span className="text-[11px] font-mono font-bold text-slate-800">
                         {row.progress}%
                       </span>
                     </div>
                   </td>
-                  <td className="py-3 px-4">
+                  <td className="py-3.5 px-4">
                     <StatusBadge status={row.status} />
                   </td>
-                  <td className="py-3 px-4 text-right">
+                  <td className="py-3.5 px-4 text-right">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -285,7 +285,7 @@ export const StateDashboard: React.FC = () => {
                         setUserRole('officer');
                         setCurrentView('compensation');
                       }}
-                      className="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 text-xs font-medium inline-flex items-center gap-1 transition-all"
+                      className="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 text-xs font-medium inline-flex items-center gap-1 transition-colors"
                     >
                       <span>Manage Awards</span>
                       <ArrowRight className="w-3 h-3" />
@@ -296,7 +296,7 @@ export const StateDashboard: React.FC = () => {
             </tbody>
           </table>
         </div>
-      </GlassCard>
+      </div>
     </div>
   );
 };

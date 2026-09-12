@@ -31,6 +31,7 @@ import { RrDashboard } from './components/rr/RrDashboard';
 import { TimelineMonitoring } from './components/timeline/TimelineMonitoring';
 import { AiAnalytics } from './components/analytics/AiAnalytics';
 import { SectorDashboard } from './components/dashboards/SectorDashboard';
+import { AccessRestricted } from './components/common/AccessRestricted';
 
 const AppContent: React.FC = () => {
   const { currentView, userRole } = useApp();
@@ -48,15 +49,24 @@ const AppContent: React.FC = () => {
         return <LoginPage />;
 
       case 'dashboard':
-        return <SectorDashboard />;
+        return userRole === 'citizen' ? <CitizenDashboard /> : <SectorDashboard />;
 
       case 'projects':
+        if (userRole === 'citizen') {
+          return <AccessRestricted moduleName="National Infrastructure Projects Registry" />;
+        }
         return <ProjectsList />;
 
       case 'project_details':
+        if (userRole === 'citizen') {
+          return <AccessRestricted moduleName="Project Details & Engineering Alignments" />;
+        }
         return <ProjectDetails />;
 
       case 'gis_map':
+        if (userRole === 'citizen') {
+          return <AccessRestricted moduleName="GIS Cadastral Geodatabase & Spatial Mapping" />;
+        }
         return <GisMap />;
 
       case 'compensation':
@@ -66,6 +76,9 @@ const AppContent: React.FC = () => {
         return <CitizenDashboard />;
 
       case 'citizen_land':
+        if (userRole === 'citizen') {
+          return <AccessRestricted moduleName="GIS Cadastral Geodatabase & Spatial Mapping" />;
+        }
         return <GisMap />;
 
       case 'field_upload':
@@ -93,6 +106,9 @@ const AppContent: React.FC = () => {
         return <TimelineMonitoring />;
 
       case 'ai_analytics':
+        if (userRole === 'citizen') {
+          return <AccessRestricted moduleName="AI Predictive Risk & Anomaly Engine" />;
+        }
         return <AiAnalytics />;
 
       default:
@@ -103,7 +119,7 @@ const AppContent: React.FC = () => {
   const isFullscreenLanding = currentView === 'landing' || currentView === 'portal_select' || currentView === 'login';
 
   return (
-    <div className="min-h-screen bg-[#0B1120] text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-slate-950">
+    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-emerald-200 selection:text-emerald-900">
       {/* Top Navbar */}
       <Navbar />
 
@@ -114,16 +130,16 @@ const AppContent: React.FC = () => {
 
       {/* Main Body Area */}
       {isFullscreenLanding ? (
-        <main className="flex-1 w-full px-4 sm:px-6 lg:px-8">
+        <main className="flex-1 w-full px-4 sm:px-6 lg:px-8 py-6">
           {renderView()}
         </main>
       ) : (
         <div className="flex-1 flex w-full overflow-hidden">
-          {/* Collapsible Role-Specific Glassmorphism Sidebar */}
+          {/* Collapsible Role-Specific Light Sidebar */}
           <Sidebar />
 
           {/* Core Content Area */}
-          <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-[#0B1120] relative">
+          <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-50 relative">
             <div className="max-w-7xl mx-auto">
               {renderView()}
             </div>

@@ -1,17 +1,15 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { GlassCard } from '../common/GlassCard';
 import { StatCard } from '../common/StatCard';
 import {
-  HeartHandshake,
   Users,
   Home,
   Briefcase,
   GraduationCap,
   Building,
   CheckCircle2,
-  Clock,
-  ArrowRight,
+  HeartHandshake,
+  MapPin,
   TrendingUp,
 } from 'lucide-react';
 
@@ -20,56 +18,56 @@ export const RrDashboard: React.FC = () => {
 
   const colonies = [
     {
-      name: 'BhoomiSetu Ananda Nilayam Resettlement Colony',
-      location: 'Ghatkesar, Medchal District, Telangana',
-      allottedUnits: 142,
-      completedUnits: 138,
+      name: 'Bhoomi Awas Enclave, Suryapet',
+      location: 'Telangana (NH-65 Project)',
+      allottedUnits: 450,
+      completedUnits: 420,
       schoolHospitalStatus: 'Operational',
-      waterElectricity: '100% Underground Grid',
-      livelihoodGrantsDisbursedCr: 4.82,
+      waterElectricity: '100% Commissioned',
+      livelihoodGrantsDisbursedCr: 24.5,
     },
     {
-      name: 'Pragati Nagar R&R Township',
-      location: 'Daund, Pune District, Maharashtra',
-      allottedUnits: 210,
-      completedUnits: 185,
+      name: 'Sahyadri Shanti Vihar, Raigad',
+      location: 'Maharashtra (WDFC Corridor)',
+      allottedUnits: 720,
+      completedUnits: 680,
+      schoolHospitalStatus: 'PHC & Primary School Ready',
+      waterElectricity: '100% Commissioned',
+      livelihoodGrantsDisbursedCr: 58.2,
+    },
+    {
+      name: 'Pragati Nagar Township, Varanasi',
+      location: 'Uttar Pradesh (Ganga Expressway)',
+      allottedUnits: 600,
+      completedUnits: 510,
       schoolHospitalStatus: 'Under Construction (85%)',
-      waterElectricity: 'Grid Connected',
-      livelihoodGrantsDisbursedCr: 7.15,
-    },
-    {
-      name: 'Samruddhi Model Resettlement Village',
-      location: 'Bhiwandi, Thane District, Maharashtra',
-      allottedUnits: 98,
-      completedUnits: 98,
-      schoolHospitalStatus: 'Operational & Handed to Gram Panchayat',
-      waterElectricity: '100% Solar Powered',
-      livelihoodGrantsDisbursedCr: 3.40,
+      waterElectricity: '90% Commissioned',
+      livelihoodGrantsDisbursedCr: 38.0,
     },
   ];
 
   return (
     <div className="space-y-6 pb-16">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
-            <span className="text-xs uppercase font-mono text-cyan-400 font-semibold tracking-wider">
+            <span className="w-2.5 h-2.5 rounded-full bg-blue-700" />
+            <span className="text-xs uppercase font-mono text-blue-900 font-bold tracking-wider">
               Second Schedule RFCTLARR Act 2013
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mt-1">
             Rehabilitation & Resettlement (R&R) Command
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400">
+          <p className="text-xs sm:text-sm text-slate-600 mt-0.5">
             Monitoring housing allotments, livelihood grants, and skill training for project-affected families.
           </p>
         </div>
 
         <button
           onClick={() => showToast('Disbursed Q1 R&R subsistence allowance batch to 842 families', 'success')}
-          className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 text-white text-xs font-semibold shadow-[0_0_15px_rgba(34,211,238,0.4)]"
+          className="px-4 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-semibold shadow-2xs transition-colors"
         >
           Disburse R&R Subsistence Grant
         </button>
@@ -82,14 +80,14 @@ export const RrDashboard: React.FC = () => {
           value="1,24,500"
           subtitle="SIA baseline survey"
           icon={Users}
-          color="cyan"
+          color="blue"
         />
         <StatCard
           title="Displaced Requiring Housing"
           value="34,200"
           subtitle="Pucca houses in R&R zones"
           icon={Home}
-          color="blue"
+          color="cyan"
         />
         <StatCard
           title="Livelihood Grants Disbursed"
@@ -108,18 +106,18 @@ export const RrDashboard: React.FC = () => {
       </div>
 
       {/* Resettlement Colonies Live Status */}
-      <GlassCard className="p-6">
-        <div className="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
+      <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-2xs">
+        <div className="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
           <div>
-            <h2 className="text-base font-bold text-white flex items-center gap-2">
-              <Building className="w-5 h-5 text-cyan-400" />
+            <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+              <Building className="w-5 h-5 text-blue-700" />
               <span>Model Resettlement Colonies & Social Infrastructure</span>
             </h2>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-600 mt-0.5">
               Infrastructure standards compliant with Third Schedule of RFCTLARR 2013
             </p>
           </div>
-          <span className="text-xs font-mono text-emerald-400 bg-emerald-950/80 px-2.5 py-1 rounded border border-emerald-500/40">
+          <span className="text-xs font-mono font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200">
             92.4% Average Handover
           </span>
         </div>
@@ -128,51 +126,51 @@ export const RrDashboard: React.FC = () => {
           {colonies.map((col) => (
             <div
               key={col.name}
-              className="p-5 rounded-2xl border border-slate-800 bg-slate-900/60 flex flex-col justify-between hover:border-cyan-500/40 transition-all group"
+              className="p-5 rounded-2xl border border-slate-200 bg-slate-50/60 flex flex-col justify-between hover:border-blue-300 transition-all group"
             >
               <div>
-                <h3 className="font-bold text-white text-sm mb-1 group-hover:text-cyan-300 transition-colors">
+                <h3 className="font-bold text-slate-900 text-sm mb-1 group-hover:text-blue-700 transition-colors">
                   {col.name}
                 </h3>
-                <p className="text-[11px] text-slate-400 mb-4">{col.location}</p>
+                <p className="text-[11px] text-slate-500 mb-4">{col.location}</p>
 
                 <div className="space-y-2.5 text-xs">
-                  <div className="flex justify-between text-slate-300">
+                  <div className="flex justify-between text-slate-600">
                     <span>Constructed Units:</span>
-                    <span className="font-mono text-emerald-400 font-bold">
+                    <span className="font-mono text-emerald-700 font-bold">
                       {col.completedUnits} / {col.allottedUnits}
                     </span>
                   </div>
 
-                  <div className="flex justify-between text-slate-300">
+                  <div className="flex justify-between text-slate-600">
                     <span>Civic Amenities:</span>
-                    <span className="text-cyan-300 font-medium">{col.schoolHospitalStatus}</span>
+                    <span className="text-blue-900 font-semibold">{col.schoolHospitalStatus}</span>
                   </div>
 
-                  <div className="flex justify-between text-slate-300">
+                  <div className="flex justify-between text-slate-600">
                     <span>Power & Water Grid:</span>
-                    <span className="text-white font-medium">{col.waterElectricity}</span>
+                    <span className="text-slate-800 font-medium">{col.waterElectricity}</span>
                   </div>
 
-                  <div className="flex justify-between text-slate-300">
+                  <div className="flex justify-between text-slate-600">
                     <span>Livelihood Grant Paid:</span>
-                    <span className="font-mono text-purple-400 font-bold">
+                    <span className="font-mono text-purple-700 font-bold">
                       ₹{col.livelihoodGrantsDisbursedCr} Cr
                     </span>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-5 pt-3 border-t border-slate-800 flex justify-between items-center text-xs">
-                <span className="text-slate-400">Handover status:</span>
-                <span className="text-emerald-400 font-bold font-mono">
+              <div className="mt-5 pt-3 border-t border-slate-200 flex justify-between items-center text-xs">
+                <span className="text-slate-500 font-medium">Handover status:</span>
+                <span className="text-emerald-700 font-bold font-mono">
                   {((col.completedUnits / col.allottedUnits) * 100).toFixed(0)}% Ready
                 </span>
               </div>
             </div>
           ))}
         </div>
-      </GlassCard>
+      </div>
     </div>
   );
 };

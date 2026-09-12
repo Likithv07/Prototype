@@ -57,18 +57,18 @@ export const ProjectsList: React.FC = () => {
   return (
     <div className="space-y-6 pb-12">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
-            <span className="text-xs uppercase font-mono text-cyan-400 font-semibold tracking-wider">
+            <span className="w-2.5 h-2.5 rounded-full bg-blue-700" />
+            <span className="text-xs uppercase font-mono text-blue-900 font-bold tracking-wider">
               National Infrastructure Pipeline
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mt-1">
             Projects Management
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400">
+          <p className="text-xs sm:text-sm text-slate-600 mt-0.5">
             Multi-sector acquisition tracking across Road, Rail, Aviation, Industrial & Defence sectors.
           </p>
         </div>
@@ -76,7 +76,7 @@ export const ProjectsList: React.FC = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={() => showToast('Exported National Project Master Register (CSV)', 'success')}
-            className="px-3.5 py-2 rounded-xl glass-panel text-slate-300 hover:text-white border border-slate-700 text-xs font-semibold flex items-center gap-1.5"
+            className="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold flex items-center gap-1.5 shadow-2xs transition-colors"
           >
             <Download className="w-3.5 h-3.5" />
             <span>Export Register</span>
@@ -85,7 +85,7 @@ export const ProjectsList: React.FC = () => {
       </div>
 
       {/* Filter Toolbar */}
-      <GlassCard className="p-4 sm:p-5">
+      <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           {/* Search */}
           <div className="relative">
@@ -95,7 +95,7 @@ export const ProjectsList: React.FC = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search Project ID, Name..."
-              className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-900/80 border border-slate-700 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400"
+              className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-700 focus:bg-white transition-all"
             />
           </div>
 
@@ -104,7 +104,7 @@ export const ProjectsList: React.FC = () => {
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl bg-slate-900/80 border border-slate-700 text-xs text-slate-200 focus:outline-none focus:border-cyan-400"
+              className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 focus:outline-none focus:border-blue-700 focus:bg-white transition-all"
             >
               <option value="ALL">All Project Types</option>
               {projectTypes.map((t) => (
@@ -120,7 +120,7 @@ export const ProjectsList: React.FC = () => {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl bg-slate-900/80 border border-slate-700 text-xs text-slate-200 focus:outline-none focus:border-cyan-400"
+              className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 focus:outline-none focus:border-blue-700 focus:bg-white transition-all"
             >
               <option value="ALL">All Statuses</option>
               <option value="Active">Active</option>
@@ -136,7 +136,7 @@ export const ProjectsList: React.FC = () => {
             <select
               value={stateFilter}
               onChange={(e) => setStateFilter(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl bg-slate-900/80 border border-slate-700 text-xs text-slate-200 focus:outline-none focus:border-cyan-400"
+              className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 focus:outline-none focus:border-blue-700 focus:bg-white transition-all"
             >
               <option value="ALL">All States</option>
               {uniqueStates.map((s) => (
@@ -152,7 +152,7 @@ export const ProjectsList: React.FC = () => {
             <select
               value={districtFilter}
               onChange={(e) => setDistrictFilter(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl bg-slate-900/80 border border-slate-700 text-xs text-slate-200 focus:outline-none focus:border-cyan-400"
+              className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 focus:outline-none focus:border-blue-700 focus:bg-white transition-all"
             >
               <option value="ALL">All Districts</option>
               {uniqueDistricts.map((d) => (
@@ -163,19 +163,19 @@ export const ProjectsList: React.FC = () => {
             </select>
           </div>
         </div>
-      </GlassCard>
+      </div>
 
       {/* Projects Table */}
-      <GlassCard className="p-6">
+      <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-2xs">
         <div className="flex items-center justify-between mb-4">
-          <span className="text-xs font-mono text-slate-400">
-            Showing <span className="text-cyan-400 font-bold">{filteredProjects.length}</span> verified infrastructure corridors
+          <span className="text-xs font-medium text-slate-500">
+            Showing <span className="text-blue-900 font-bold">{filteredProjects.length}</span> verified infrastructure corridors
           </span>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-slate-300">
-            <thead className="bg-slate-900/80 text-slate-400 font-mono text-[11px] uppercase border-b border-slate-800">
+          <table className="w-full text-left text-xs text-slate-700">
+            <thead className="bg-slate-50 text-slate-700 font-semibold text-[11px] uppercase border-y border-slate-200">
               <tr>
                 <th className="py-3 px-4">Project ID</th>
                 <th className="py-3 px-4">Project Name & Ministry</th>
@@ -187,7 +187,7 @@ export const ProjectsList: React.FC = () => {
                 <th className="py-3 px-4 text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60">
+            <tbody className="divide-y divide-slate-100 font-medium">
               {filteredProjects.map((proj) => (
                 <tr
                   key={proj.id}
@@ -195,54 +195,54 @@ export const ProjectsList: React.FC = () => {
                     setSelectedProjectId(proj.id);
                     setCurrentView('project_details');
                   }}
-                  className="hover:bg-cyan-500/5 transition-colors cursor-pointer group"
+                  className="hover:bg-slate-50/80 transition-colors cursor-pointer group"
                 >
-                  <td className="py-3 px-4 font-mono font-bold text-cyan-400 whitespace-nowrap">
+                  <td className="py-3.5 px-4 font-mono font-bold text-blue-900 whitespace-nowrap">
                     {proj.id}
                   </td>
-                  <td className="py-3 px-4">
-                    <p className="font-semibold text-white group-hover:text-cyan-300 transition-colors">
+                  <td className="py-3.5 px-4">
+                    <p className="font-semibold text-slate-900 group-hover:text-blue-700 transition-colors">
                       {proj.name}
                     </p>
-                    <p className="text-[11px] text-slate-400">{proj.ministry}</p>
+                    <p className="text-[11px] text-slate-500 mt-0.5">{proj.ministry}</p>
                   </td>
-                  <td className="py-3 px-4 whitespace-nowrap">
-                    <p className="text-slate-200">{proj.state}</p>
-                    <p className="text-[11px] text-slate-400">{proj.district}</p>
+                  <td className="py-3.5 px-4 whitespace-nowrap">
+                    <p className="text-slate-800 font-medium">{proj.state}</p>
+                    <p className="text-[11px] text-slate-500">{proj.district}</p>
                   </td>
-                  <td className="py-3 px-4 whitespace-nowrap">
-                    <span className="px-2 py-0.5 rounded-md bg-slate-800 border border-slate-700 text-[11px] text-slate-300">
+                  <td className="py-3.5 px-4 whitespace-nowrap">
+                    <span className="px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200 text-[11px] text-slate-700 font-medium">
                       {proj.projectType}
                     </span>
                   </td>
-                  <td className="py-3 px-4 font-tech text-sm whitespace-nowrap">
-                    <span className="text-emerald-400 font-bold">{proj.landAcquired}</span> /{' '}
+                  <td className="py-3.5 px-4 text-slate-800 whitespace-nowrap">
+                    <span className="text-emerald-700 font-bold">{proj.landAcquired}</span> /{' '}
                     {proj.landRequired} Ac
                   </td>
-                  <td className="py-3 px-4 w-32">
+                  <td className="py-3.5 px-4 w-32">
                     <div className="flex items-center gap-2">
-                      <div className="flex-1 h-2 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+                      <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full"
+                          className="h-full bg-blue-700 rounded-full"
                           style={{ width: `${proj.progress}%` }}
                         />
                       </div>
-                      <span className="text-[11px] font-mono font-bold text-white">
+                      <span className="text-[11px] font-mono font-bold text-slate-800">
                         {proj.progress}%
                       </span>
                     </div>
                   </td>
-                  <td className="py-3 px-4 whitespace-nowrap">
+                  <td className="py-3.5 px-4 whitespace-nowrap">
                     <StatusBadge status={proj.status} />
                   </td>
-                  <td className="py-3 px-4 text-right whitespace-nowrap">
+                  <td className="py-3.5 px-4 text-right whitespace-nowrap">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         setSelectedProjectId(proj.id);
                         setCurrentView('project_details');
                       }}
-                      className="px-3 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 text-xs font-semibold inline-flex items-center gap-1 transition-all"
+                      className="px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 text-xs font-semibold inline-flex items-center gap-1 transition-colors"
                     >
                       <span>View Details</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -253,7 +253,7 @@ export const ProjectsList: React.FC = () => {
             </tbody>
           </table>
         </div>
-      </GlassCard>
+      </div>
     </div>
   );
 };

@@ -1,16 +1,9 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { GlassCard } from '../common/GlassCard';
-import { StatusBadge } from '../common/StatusBadge';
 import {
-  ShieldAlert,
   Search,
   CheckCircle2,
-  Clock,
-  UserCheck,
-  Terminal,
   Download,
-  Filter,
 } from 'lucide-react';
 
 export const AuditTrail: React.FC = () => {
@@ -28,33 +21,33 @@ export const AuditTrail: React.FC = () => {
   return (
     <div className="space-y-6 pb-16">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-400 animate-pulse" />
-            <span className="text-xs uppercase font-mono text-rose-400 font-semibold tracking-wider">
+            <span className="w-2.5 h-2.5 rounded-full bg-rose-600" />
+            <span className="text-xs uppercase font-mono text-rose-700 font-bold tracking-wider">
               Immutable Cryptographic Audit Trail
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mt-1">
             System & Regulatory Audit Logs
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400">
+          <p className="text-xs sm:text-sm text-slate-600 mt-0.5">
             Real-time append-only ledger tracking all administrative approvals, field uploads, and citizen consents.
           </p>
         </div>
 
         <button
           onClick={() => showToast('Generated Statutory CAG / CVC Audit Manifest (JSON/CSV)', 'success')}
-          className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold flex items-center gap-2"
+          className="px-4 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs font-semibold flex items-center gap-2 shadow-2xs transition-colors"
         >
-          <Download className="w-4 h-4 text-cyan-400" />
+          <Download className="w-4 h-4 text-blue-700" />
           <span>Export Audit Ledger</span>
         </button>
       </div>
 
       {/* Audit Log Table */}
-      <GlassCard className="p-6">
+      <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-2xs">
         <div className="flex items-center justify-between gap-4 mb-4">
           <div className="relative w-full max-w-sm">
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -63,17 +56,17 @@ export const AuditTrail: React.FC = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search audit action, user, or entity..."
-              className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400"
+              className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-700 focus:bg-white"
             />
           </div>
-          <span className="text-xs font-mono text-cyan-400">
+          <span className="text-xs font-mono text-slate-500 font-semibold">
             {filteredLogs.length} Verified Entries
           </span>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-slate-300">
-            <thead className="bg-slate-900/80 text-slate-400 font-mono text-[11px] uppercase border-b border-slate-800">
+          <table className="w-full text-left text-xs text-slate-700">
+            <thead className="bg-slate-50 text-slate-600 font-mono text-[11px] uppercase border-y border-slate-200">
               <tr>
                 <th className="py-3 px-4">Log ID & Timestamp</th>
                 <th className="py-3 px-4">Officer / User</th>
@@ -84,33 +77,33 @@ export const AuditTrail: React.FC = () => {
                 <th className="py-3 px-4 text-right">Integrity</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60 font-mono text-[11px]">
+            <tbody className="divide-y divide-slate-100 font-mono text-[11.5px]">
               {filteredLogs.map((log) => (
-                <tr key={log.id} className="hover:bg-slate-800/40 transition-colors">
+                <tr key={log.id} className="hover:bg-slate-50/80 transition-colors">
                   <td className="py-3 px-4 whitespace-nowrap">
-                    <span className="text-cyan-400 font-bold block">{log.id}</span>
+                    <span className="text-blue-900 font-bold block">{log.id}</span>
                     <span className="text-slate-400 text-[10px]">{log.timestamp}</span>
                   </td>
-                  <td className="py-3 px-4 font-sans font-semibold text-white whitespace-nowrap">
+                  <td className="py-3 px-4 font-sans font-semibold text-slate-900 whitespace-nowrap">
                     {log.userName}
                   </td>
                   <td className="py-3 px-4 whitespace-nowrap">
-                    <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 text-[10px]">
+                    <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 text-[10px] font-sans font-medium">
                       {log.role}
                     </span>
                   </td>
-                  <td className="py-3 px-4 font-sans text-slate-200">
+                  <td className="py-3 px-4 font-sans text-slate-800">
                     {log.action}
                   </td>
-                  <td className="py-3 px-4 text-cyan-300 whitespace-nowrap">
+                  <td className="py-3 px-4 text-blue-800 font-bold whitespace-nowrap">
                     {log.entityId}
                   </td>
-                  <td className="py-3 px-4 text-slate-400 whitespace-nowrap">
+                  <td className="py-3 px-4 text-slate-500 whitespace-nowrap">
                     {log.ipAddress}
                   </td>
                   <td className="py-3 px-4 text-right whitespace-nowrap">
-                    <span className="text-emerald-400 font-bold text-[10px] inline-flex items-center gap-1">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span className="text-emerald-700 font-bold text-[10.5px] inline-flex items-center gap-1 font-sans">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                       VALID
                     </span>
                   </td>
@@ -119,7 +112,7 @@ export const AuditTrail: React.FC = () => {
             </tbody>
           </table>
         </div>
-      </GlassCard>
+      </div>
     </div>
   );
 };

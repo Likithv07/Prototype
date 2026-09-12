@@ -11,7 +11,6 @@ import {
   ArrowRight,
   TrendingUp,
   Layers,
-  Sparkles,
   CheckCircle2,
   Lock,
   Building,
@@ -23,6 +22,8 @@ import {
   ChevronRight,
   Clock,
   Landmark,
+  FileText,
+  BadgeCheck,
 } from 'lucide-react';
 
 export const LandingPage: React.FC = () => {
@@ -38,16 +39,17 @@ export const LandingPage: React.FC = () => {
     }
     const sample = {
       id: trackingId.trim(),
-      village: 'Village Shivampet, Nalgonda, Telangana',
+      village: 'Village Shivampet, Nalgonda District, Telangana',
       area: '1.75 Acres (7,082 m²)',
-      sector: 'Highways (NH-65 Expressway)',
+      sector: 'National Highways Authority of India (NH-65)',
       status: 'Section 3D Gazetted (Title Vested in Govt)',
-      solatium: '₹33,75,000 (100% Calculated)',
+      baseRate: '₹12,00,000 / Acre',
+      solatium: '₹33,75,000 (100% Solatium Awarded)',
       totalAward: '₹72,25,000',
-      bankStatus: 'PFMS Pre-Validated (SBI)',
+      bankStatus: 'PFMS Pre-Validated (State Bank of India)',
     };
     setSearchResult(sample);
-    showToast(`Survey Plot ${trackingId.trim()} found in BhoomiSetu registry`, 'success');
+    showToast(`Survey Plot ${trackingId.trim()} located in registry`, 'success');
   };
 
   const handleEnterSector = (sectorKey: SectorType) => {
@@ -75,180 +77,180 @@ export const LandingPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-16 py-4 max-w-7xl mx-auto">
-      {/* Top Banner / Hero introducing BhoomiSetu */}
-      <section className="relative rounded-2xl bg-slate-900/80 border border-slate-800 p-8 sm:p-12 shadow-sm overflow-hidden">
+    <div className="space-y-12 py-2 max-w-7xl mx-auto text-slate-800">
+      {/* Hero Card: Clean, light, welcoming, authoritative */}
+      <section className="bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-10 shadow-xs">
         {/* Top bar inside hero with brand and highlighted Login button */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-8 mb-8 border-b border-slate-800/80">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 mb-6 border-b border-slate-100">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <div className="w-10 h-10 rounded-xl bg-blue-900 text-white flex items-center justify-center shadow-xs">
               <Landmark className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-white tracking-wide">
+                <span className="text-base font-bold text-slate-900 tracking-tight">
                   BhoomiSetu
                 </span>
-                <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
-                  National Portal
+                <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-blue-50 text-blue-900 border border-blue-200">
+                  Government of India
                 </span>
               </div>
-              <span className="text-xs text-slate-400 block">
-                Digital Land Acquisition Governance • Govt. of India
+              <span className="text-xs text-slate-500 block font-medium">
+                National Land Acquisition & Transparency Portal
               </span>
             </div>
           </div>
 
-          {/* Highlighted Login button in the top right */}
+          {/* Highlighted Login button in top right */}
           <div className="flex items-center gap-3 self-start sm:self-auto">
             <button
               onClick={() => setCurrentView('login')}
               id="landing-header-login-btn"
-              className="px-5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-sm hover:shadow transition-all flex items-center gap-2 group"
+              className="px-5 py-2.5 rounded-lg bg-blue-700 hover:bg-blue-800 text-white font-semibold text-xs shadow-xs hover:shadow-sm transition-all flex items-center gap-2 group"
             >
-              <Lock className="w-3.5 h-3.5 text-emerald-200 group-hover:text-white" />
+              <Lock className="w-3.5 h-3.5 text-blue-100" />
               <span>Sector Login</span>
               <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
             </button>
           </div>
         </div>
 
-        {/* Hero Copy */}
+        {/* Hero Headline & Purpose */}
         <div className="max-w-3xl space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/90 text-slate-300 border border-slate-700 text-xs">
-            <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Statutory Compliance with RFCTLARR Act 2013</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold">
+            <BadgeCheck className="w-3.5 h-3.5 text-blue-700" />
+            <span>Compliant with RFCTLARR Act, 2013</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
-            Unified Digital Governance for National Land Acquisition
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
+            Transparent, Timely Land Acquisition for India’s Infrastructure
           </h1>
 
-          <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-            <strong className="text-white">BhoomiSetu</strong> is India’s centralized digital bridge connecting Infrastructure Sectors, State Revenue Authorities, and Citizens. Built to eliminate administrative delays, enforce statutory 12-month lapsing timelines, automate 100% Solatium calculations, and disburse compensation straight into landowners’ bank accounts through direct PFMS integration.
+          <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+            <strong className="text-slate-900 font-semibold">BhoomiSetu</strong> connects Project Authorities, District Administration, and Citizens on one unified digital system. It provides automated fair market valuations, tracks statutory 12-month gazette deadlines to prevent lapsing, and transfers compensation straight to landowner bank accounts.
           </p>
 
           <div className="pt-2 flex flex-wrap items-center gap-3">
             <button
               onClick={() => setCurrentView('login')}
               id="landing-hero-login-btn"
-              className="px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-sm transition-all flex items-center gap-2"
+              className="px-5 py-2.5 rounded-lg bg-blue-700 hover:bg-blue-800 text-white font-semibold text-xs shadow-xs hover:shadow-sm transition-all flex items-center gap-2"
             >
               <span>Access Sector Portals</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
             <a
               href="#sectors-section"
-              className="px-4 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition-all"
+              className="px-4 py-2.5 rounded-lg bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold border border-slate-300 shadow-2xs transition-all"
             >
-              Explore 6 Core Sectors
+              Select Sector
             </a>
             <a
               href="#track-parcel-section"
-              className="px-4 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition-all"
+              className="px-4 py-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-all"
             >
-              Check Survey Plot Status
+              Search Land Plot Status
             </a>
           </div>
         </div>
 
-        {/* Key Metrics Strip */}
-        <div className="mt-10 pt-8 border-t border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div className="p-3.5 rounded-lg bg-slate-950/40 border border-slate-800/80">
-            <span className="text-2xl font-bold font-tech text-white">6 Sectors</span>
-            <span className="block text-xs text-slate-400 mt-0.5">Highways, Rail, Power, Urban, Revenue, Citizen</span>
+        {/* Key Statistics Cards in Clean Light Style */}
+        <div className="mt-8 pt-6 border-t border-slate-100 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
+            <span className="text-2xl font-bold text-slate-900 block">6 Sectors</span>
+            <span className="text-xs text-slate-500 mt-1 block">Dedicated specialized portals</span>
           </div>
-          <div className="p-3.5 rounded-lg bg-slate-950/40 border border-slate-800/80">
-            <span className="text-2xl font-bold font-tech text-emerald-400">8,420+ km</span>
-            <span className="block text-xs text-slate-400 mt-0.5">Corridors DGPS Demarcated</span>
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
+            <span className="text-2xl font-bold text-blue-900 block">8,420+ km</span>
+            <span className="text-xs text-slate-500 mt-1 block">Corridor alignments mapped</span>
           </div>
-          <div className="p-3.5 rounded-lg bg-slate-950/40 border border-slate-800/80">
-            <span className="text-2xl font-bold font-tech text-cyan-400">18,500+</span>
-            <span className="block text-xs text-slate-400 mt-0.5">Survey Plots Digitized</span>
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
+            <span className="text-2xl font-bold text-blue-700 block">18,500+</span>
+            <span className="text-xs text-slate-500 mt-1 block">Survey plots recorded</span>
           </div>
-          <div className="p-3.5 rounded-lg bg-slate-950/40 border border-slate-800/80">
-            <span className="text-2xl font-bold font-tech text-emerald-400">₹4,820 Cr</span>
-            <span className="block text-xs text-slate-400 mt-0.5">Disbursed via Direct Bank PFMS</span>
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
+            <span className="text-2xl font-bold text-emerald-700 block">₹4,820 Cr</span>
+            <span className="text-xs text-slate-500 mt-1 block">Directly credited to farmers</span>
           </div>
         </div>
       </section>
 
-      {/* About BhoomiSetu - Architectural Pillars */}
-      <section className="space-y-6">
+      {/* How BhoomiSetu Works: 4 Simple Steps */}
+      <section className="space-y-4">
         <div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-emerald-400">
-            Core Architecture
+          <span className="text-xs font-bold uppercase tracking-wider text-blue-800">
+            Standard Procedure
           </span>
-          <h2 className="text-2xl font-bold text-white mt-1">
-            How BhoomiSetu Solves the Land Acquisition Bottleneck
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mt-0.5">
+            How Land Acquisition Works on BhoomiSetu
           </h2>
-          <p className="text-xs text-slate-400 mt-1 max-w-2xl">
-            Designed to address the four historic root causes of infrastructure delays in India: title ambiguity, valuation disputes, statutory deadline lapsing, and payment delays.
+          <p className="text-xs text-slate-500 mt-1">
+            A clear, transparent 4-stage process designed to ensure fair compensation and timely project clearances.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-5 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
-            <div className="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
-              <Calculator className="w-5 h-5" />
+          <div className="p-5 rounded-xl bg-white border border-slate-200/90 shadow-2xs space-y-2">
+            <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-800 flex items-center justify-center font-bold text-sm">
+              1
             </div>
-            <h3 className="text-sm font-semibold text-white">Automated RFCTLARR Valuation</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Computes base market rates, applies rural distance multipliers (1.5x–2.0x), calculates 100% Solatium, and adds 12% statutory interest automatically.
+            <h3 className="text-sm font-bold text-slate-900">1. Proposal & Notification</h3>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Infrastructure agencies submit alignment proposals. Preliminary gazette notifications are published with complete village Khasra listings.
             </p>
           </div>
 
-          <div className="p-5 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
-            <div className="w-9 h-9 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
-              <Compass className="w-5 h-5" />
+          <div className="p-5 rounded-xl bg-white border border-slate-200/90 shadow-2xs space-y-2">
+            <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center font-bold text-sm">
+              2
             </div>
-            <h3 className="text-sm font-semibold text-white">Cadastral DGPS & Drone GIS</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Integrates drone orthomosaic maps with village revenue Khasra sheets to pinpoint exact survey boundaries with sub-meter accuracy.
+            <h3 className="text-sm font-bold text-slate-900">2. Joint Field Survey</h3>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Revenue inspectors and project engineers conduct DGPS field surveys to verify exact boundaries, crops, structures, and tree counts.
             </p>
           </div>
 
-          <div className="p-5 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
-            <div className="w-9 h-9 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center">
-              <Clock className="w-5 h-5" />
+          <div className="p-5 rounded-xl bg-white border border-slate-200/90 shadow-2xs space-y-2">
+            <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold text-sm">
+              3
             </div>
-            <h3 className="text-sm font-semibold text-white">Section 19 SLA Watchdog</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Enforces the strict 12-month statutory deadline between Preliminary Notification and Award Declaration, sending automated alerts to District Collectors.
+            <h3 className="text-sm font-bold text-slate-900">3. Fair Valuation & Solatium</h3>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              System calculates fair market value with rural distance multipliers (up to 2.0x), 100% Solatium addition, and statutory interest.
             </p>
           </div>
 
-          <div className="p-5 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
-            <div className="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
-              <CheckCircle2 className="w-5 h-5" />
+          <div className="p-5 rounded-xl bg-white border border-slate-200/90 shadow-2xs space-y-2">
+            <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-sm">
+              4
             </div>
-            <h3 className="text-sm font-semibold text-white">PFMS Direct Benefit Transfer</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Links sanctioned awards directly to beneficiary bank accounts via Aadhaar, guaranteeing immediate compensation release without middlemen.
+            <h3 className="text-sm font-bold text-slate-900">4. Direct Bank Transfer</h3>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Sanctioned compensation is deposited directly into landowners' bank accounts via Aadhaar-linked PFMS without intermediate delays.
             </p>
           </div>
         </div>
       </section>
 
       {/* Sector Portals Section */}
-      <section id="sectors-section" className="space-y-6 scroll-mt-20">
+      <section id="sectors-section" className="space-y-4 scroll-mt-20">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <span className="text-xs font-semibold uppercase tracking-wider text-emerald-400">
+            <span className="text-xs font-bold uppercase tracking-wider text-blue-800">
               Sector Specialization
             </span>
-            <h2 className="text-2xl font-bold text-white mt-1">
-              Sector-Specific Portals & Dashboards
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mt-0.5">
+              Sector Portals & Officer Dashboards
             </h2>
-            <p className="text-xs text-slate-400 mt-1">
-              Select your sector to authenticate and view information tailored to your operational workflows:
+            <p className="text-xs text-slate-500 mt-1">
+              Select your sector to log in and access your specific data, maps, and administrative workflows:
             </p>
           </div>
           <button
             onClick={() => setCurrentView('login')}
-            className="self-start sm:self-auto text-xs font-semibold text-emerald-400 hover:text-emerald-300 flex items-center gap-1"
+            className="self-start sm:self-auto text-xs font-bold text-blue-700 hover:text-blue-800 flex items-center gap-1"
           >
-            <span>Proceed to Login</span>
+            <span>Go to Login</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -260,29 +262,32 @@ export const LandingPage: React.FC = () => {
             return (
               <div
                 key={secKey}
-                className="p-5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all flex flex-col justify-between"
+                className="p-5 rounded-xl bg-white border border-slate-200/90 hover:border-blue-300 hover:shadow-sm transition-all flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-slate-800 text-emerald-400 border border-slate-700">
+                    <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
                       {sec.badge}
                     </span>
-                    <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-300">
+                    <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-800 flex items-center justify-center">
                       <IconComponent className="w-4 h-4" />
                     </div>
                   </div>
 
-                  <h3 className="text-sm font-bold text-white">{sec.name}</h3>
-                  <p className="text-xs text-slate-400 mt-1 leading-relaxed line-clamp-3">
+                  <h3 className="text-sm font-bold text-slate-900">{sec.name}</h3>
+                  <span className="text-[11px] font-semibold text-blue-700 block mt-0.5">
+                    {sec.department}
+                  </span>
+                  <p className="text-xs text-slate-600 mt-2 leading-relaxed">
                     {sec.tagline}
                   </p>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-slate-800/80">
+                <div className="mt-5 pt-3 border-t border-slate-100">
                   <button
                     onClick={() => handleEnterSector(secKey)}
                     id={`enter-sector-${secKey}`}
-                    className="w-full py-2 px-3 rounded-lg bg-slate-800 hover:bg-emerald-600 hover:text-white text-emerald-400 border border-slate-700 hover:border-emerald-500 text-xs font-semibold transition-all flex items-center justify-center gap-1.5"
+                    className="w-full py-2 px-3 rounded-lg bg-blue-50 hover:bg-blue-700 hover:text-white text-blue-900 border border-blue-200 text-xs font-semibold transition-all flex items-center justify-center gap-1.5"
                   >
                     <span>Enter {sec.shortName} Portal</span>
                     <ChevronRight className="w-3.5 h-3.5" />
@@ -295,16 +300,16 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* Public Land Parcel Tracking Bar */}
-      <section id="track-parcel-section" className="rounded-xl bg-slate-900/60 border border-slate-800 p-6 sm:p-8 space-y-4 scroll-mt-20">
+      <section id="track-parcel-section" className="rounded-2xl bg-white border border-slate-200/90 p-6 sm:p-8 space-y-4 shadow-xs scroll-mt-20">
         <div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-emerald-400">
-            Citizen Transparency
+          <span className="text-xs font-bold uppercase tracking-wider text-blue-800">
+            Citizen Public Search
           </span>
-          <h2 className="text-xl font-bold text-white mt-1">
-            Search Public Survey Plot & Compensation Status
+          <h2 className="text-xl font-bold text-slate-900 mt-0.5">
+            Search Land Plot & Compensation Status
           </h2>
-          <p className="text-xs text-slate-400 mt-1">
-            Enter your Survey Number, Khasra Number, or Land Parcel ID to view gazette status, valuation breakdown, and disbursement timeline.
+          <p className="text-xs text-slate-500 mt-1">
+            Enter your Survey Number, Khasra Number, or Land Parcel ID to view gazette status and compensation award calculation.
           </p>
         </div>
 
@@ -316,31 +321,31 @@ export const LandingPage: React.FC = () => {
               value={trackingId}
               onChange={(e) => setTrackingId(e.target.value)}
               placeholder="e.g. TS-HYD-2026-001245 or Sy. No. 145/2"
-              className="w-full pl-9 pr-4 py-2.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+              className="w-full pl-9 pr-4 py-2.5 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
             />
           </div>
           <button
             type="submit"
             id="track-parcel-submit-btn"
-            className="px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition-colors shrink-0 flex items-center justify-center gap-1.5"
+            className="px-5 py-2.5 rounded-lg bg-blue-700 hover:bg-blue-800 text-white font-semibold text-xs transition-colors shrink-0 flex items-center justify-center gap-1.5 shadow-2xs"
           >
             <span>Search Plot</span>
             <Search className="w-3.5 h-3.5" />
           </button>
         </form>
 
-        {/* Quick Demo Search Pills */}
-        <div className="flex items-center gap-2 text-xs text-slate-400 flex-wrap">
-          <span className="text-[11px]">Demo queries:</span>
+        {/* Demo Search Helpers */}
+        <div className="flex items-center gap-2 text-xs text-slate-500 flex-wrap">
+          <span className="text-[11px] font-medium">Try example query:</span>
           <button
             type="button"
             onClick={() => {
               setTrackingId('TS-HYD-2026-001245');
               handleTrackSubmit({ preventDefault: () => {} } as any);
             }}
-            className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-mono border border-slate-700"
+            className="px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] border border-slate-200 transition-colors font-medium"
           >
-            TS-HYD-2026-001245 (Shivampet)
+            TS-HYD-2026-001245 (Telangana Highway)
           </button>
           <button
             type="button"
@@ -348,60 +353,60 @@ export const LandingPage: React.FC = () => {
               setTrackingId('MH-PAL-2026-003810');
               handleTrackSubmit({ preventDefault: () => {} } as any);
             }}
-            className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-mono border border-slate-700"
+            className="px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] border border-slate-200 transition-colors font-medium"
           >
-            MH-PAL-2026-003810 (Bullet Train)
+            MH-PAL-2026-003810 (Bullet Train Corridor)
           </button>
         </div>
 
-        {/* Search Result Card if searched */}
+        {/* Search Result Card */}
         {searchResult && (
-          <div className="mt-4 p-4 rounded-lg bg-slate-950 border border-emerald-500/30 text-xs space-y-3">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-800">
+          <div className="mt-4 p-5 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-200">
               <div>
-                <span className="text-[11px] text-emerald-400 font-mono font-medium block">
-                  VERIFIED RECORD FOUND
+                <span className="text-[11px] font-bold text-blue-800 uppercase block">
+                  Verified Official Record
                 </span>
-                <span className="text-sm font-bold text-white">
+                <span className="text-sm font-bold text-slate-900">
                   Plot ID: {searchResult.id} • {searchResult.village}
                 </span>
               </div>
-              <span className="px-2 py-1 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 text-[11px] font-semibold self-start sm:self-auto">
+              <span className="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-semibold self-start sm:self-auto">
                 {searchResult.status}
               </span>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
               <div>
-                <span className="text-slate-400 text-[11px] block">Project Sector</span>
-                <span className="text-slate-200 font-medium">{searchResult.sector}</span>
+                <span className="text-slate-500 text-[11px] block">Project Agency</span>
+                <span className="text-slate-800 font-medium">{searchResult.sector}</span>
               </div>
               <div>
-                <span className="text-slate-400 text-[11px] block">Notified Area</span>
-                <span className="text-slate-200 font-mono">{searchResult.area}</span>
+                <span className="text-slate-500 text-[11px] block">Notified Area</span>
+                <span className="text-slate-800 font-semibold">{searchResult.area}</span>
               </div>
               <div>
-                <span className="text-slate-400 text-[11px] block">100% Solatium Award</span>
-                <span className="text-emerald-400 font-mono font-bold">{searchResult.solatium}</span>
+                <span className="text-slate-500 text-[11px] block">100% Solatium Award</span>
+                <span className="text-emerald-700 font-bold">{searchResult.solatium}</span>
               </div>
               <div>
-                <span className="text-slate-400 text-[11px] block">Total Sanctioned</span>
-                <span className="text-emerald-400 font-mono font-bold">{searchResult.totalAward}</span>
+                <span className="text-slate-500 text-[11px] block">Total Compensation</span>
+                <span className="text-emerald-700 font-bold text-sm">{searchResult.totalAward}</span>
               </div>
             </div>
 
-            <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-2">
-              <span className="text-[11px] text-slate-400">
-                Direct Benefit Transfer status: <strong className="text-cyan-400">{searchResult.bankStatus}</strong>
+            <div className="pt-3 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-2">
+              <span className="text-[11px] text-slate-600">
+                Direct Bank Transfer: <strong className="text-slate-900">{searchResult.bankStatus}</strong>
               </span>
               <button
                 onClick={() => {
                   setActiveSector('citizen');
                   setCurrentView('login');
                 }}
-                className="w-full sm:w-auto px-3 py-1.5 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs flex items-center justify-center gap-1"
+                className="w-full sm:w-auto px-4 py-1.5 rounded-lg bg-blue-700 hover:bg-blue-800 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-2xs"
               >
-                <span>Login to eSign Consent</span>
+                <span>Login as Landowner to Consent</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -409,32 +414,32 @@ export const LandingPage: React.FC = () => {
         )}
       </section>
 
-      {/* Minimal Footer */}
-      <footer className="pt-8 border-t border-slate-800/80 text-xs text-slate-400 flex flex-col sm:flex-row items-center justify-between gap-4">
+      {/* Clean Light Footer */}
+      <footer className="pt-6 pb-4 border-t border-slate-200 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
-          <span className="text-slate-300 font-semibold">BhoomiSetu Portal</span>
-          <span className="block text-[11px] text-slate-400">
-            Compliant with RFCTLARR Act 2013 & National Spatial Data Infrastructure
+          <span className="text-slate-800 font-bold">BhoomiSetu Portal</span>
+          <span className="block text-[11px] text-slate-500 mt-0.5">
+            Ministry of Rural Development • Government of India
           </span>
         </div>
         <div className="flex items-center gap-4">
           <button
             onClick={() => setCurrentView('login')}
-            className="text-emerald-400 hover:underline font-semibold"
+            className="text-blue-700 hover:underline font-semibold"
           >
             Sector Login
           </button>
           <button
             onClick={() => setCurrentView('scope')}
-            className="hover:text-slate-300"
+            className="hover:text-slate-800"
           >
-            Statutory Scope
+            RFCTLARR Act Rules
           </button>
           <button
             onClick={() => setCurrentView('gis_map')}
-            className="hover:text-slate-300"
+            className="hover:text-slate-800"
           >
-            GIS Map
+            Cadastral Map
           </button>
         </div>
       </footer>

@@ -1,6 +1,5 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { GlassCard } from '../common/GlassCard';
 import {
   BookOpen,
   Landmark,
@@ -10,8 +9,6 @@ import {
   UserCheck,
   Shield,
   CheckCircle2,
-  Layers,
-  Sparkles,
   ArrowRight,
 } from 'lucide-react';
 
@@ -22,7 +19,7 @@ export const ScopeOfStudy: React.FC = () => {
     {
       title: 'Central Government Authorities',
       icon: Landmark,
-      color: 'text-blue-400 border-blue-500/30 bg-blue-500/10',
+      color: 'text-blue-700 border-blue-200 bg-blue-50',
       role: 'central',
       summary:
         'National apex oversight across 28 States and 8 UTs. Live pipeline aggregation with PRAGATI and Gati Shakti platforms, statutory 12-month lapsing alerts, and automated inter-ministerial coordination.',
@@ -36,7 +33,7 @@ export const ScopeOfStudy: React.FC = () => {
     {
       title: 'State Government Authorities',
       icon: Building2,
-      color: 'text-purple-400 border-purple-500/30 bg-purple-500/10',
+      color: 'text-purple-700 border-purple-200 bg-purple-50',
       role: 'state',
       summary:
         'Revenue department command overseeing District Collectors, Divisional Commissioners, and state-level land consolidation policies under State Land Acquisition Rules.',
@@ -50,7 +47,7 @@ export const ScopeOfStudy: React.FC = () => {
     {
       title: 'District Authorities & Land Acquisition Officers (LAO)',
       icon: Briefcase,
-      color: 'text-cyan-400 border-cyan-500/30 bg-cyan-500/10',
+      color: 'text-cyan-800 border-cyan-200 bg-cyan-50',
       role: 'officer',
       summary:
         'Statutory execution authority responsible for RFCTLARR valuation formulas, Section 15 objection hearings, award determinations, Solatium approvals, and physical possession certificates.',
@@ -64,7 +61,7 @@ export const ScopeOfStudy: React.FC = () => {
     {
       title: 'Field Verification Officers',
       icon: Camera,
-      color: 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10',
+      color: 'text-emerald-700 border-emerald-200 bg-emerald-50',
       role: 'field_officer',
       summary:
         'Mobile survey units executing on-ground joint measurements, high-precision NavIC/GPS coordinate captures, crop/structure asset counts, and geo-tagged photographic evidence.',
@@ -78,7 +75,7 @@ export const ScopeOfStudy: React.FC = () => {
     {
       title: 'Citizens & Landowners',
       icon: UserCheck,
-      color: 'text-amber-400 border-amber-500/30 bg-amber-500/10',
+      color: 'text-amber-700 border-amber-200 bg-amber-50',
       role: 'citizen',
       summary:
         'Direct citizen self-service window eliminating middlemen and corruption. Enables landowners to track gazette notices, view itemized compensation calculations, eSign consent, and register CPGRAMS grievances.',
@@ -92,7 +89,7 @@ export const ScopeOfStudy: React.FC = () => {
     {
       title: 'System Administrators',
       icon: Shield,
-      color: 'text-rose-400 border-rose-500/30 bg-rose-500/10',
+      color: 'text-rose-700 border-rose-200 bg-rose-50',
       role: 'admin',
       summary:
         'Master system administration managing role-based access control (RBAC), immutable SHA-256 audit trails, geodatabase integrity, and API interoperability with BharatMaps and PFMS.',
@@ -109,14 +106,14 @@ export const ScopeOfStudy: React.FC = () => {
     <div className="space-y-8 pb-16">
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-950/70 border border-cyan-500/30 text-cyan-300 text-xs font-semibold mb-3">
-          <BookOpen className="w-3.5 h-3.5" />
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-900 text-xs font-semibold mb-3">
+          <BookOpen className="w-3.5 h-3.5 text-blue-700" />
           Smart India Hackathon • Architectural Blueprints
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+        <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
           System Scope & Stakeholder Architecture
         </h1>
-        <p className="mt-3 text-slate-300 text-sm sm:text-base leading-relaxed">
+        <p className="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed">
           Comprehensive mapping of how BhoomiSetu unifies India's land acquisition lifecycle under
           a transparent, accountable, and legally enforceable digital ecosystem.
         </p>
@@ -127,50 +124,50 @@ export const ScopeOfStudy: React.FC = () => {
         {stakeholders.map((s) => {
           const Icon = s.icon;
           return (
-            <GlassCard key={s.title} glow className="p-6 flex flex-col justify-between">
+            <div key={s.title} className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-2xs flex flex-col justify-between hover:border-blue-300 transition-colors">
               <div>
                 <div className="flex items-start gap-3.5 mb-4">
                   <div className={`p-3 rounded-2xl border ${s.color} shrink-0`}>
                     <Icon className="w-6 h-6" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-bold text-white tracking-tight">{s.title}</h2>
-                    <span className="text-[11px] font-mono text-cyan-400">
-                      Operational Tier: {s.role.toUpperCase()}
+                    <h2 className="text-lg font-bold text-slate-900 tracking-tight">{s.title}</h2>
+                    <span className="text-[11px] font-mono text-slate-500 font-medium">
+                      Operational Tier: <strong className="text-blue-900">{s.role.toUpperCase()}</strong>
                     </span>
                   </div>
                 </div>
 
-                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4">
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4">
                   {s.summary}
                 </p>
 
-                <div className="space-y-2 pt-3 border-t border-slate-800">
-                  <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
+                <div className="space-y-2 pt-3 border-t border-slate-100">
+                  <span className="text-xs font-semibold text-slate-700 uppercase tracking-wider block">
                     Core Functional Capabilities:
                   </span>
                   {s.deliverables.map((item, idx) => (
-                    <div key={idx} className="flex items-start gap-2 text-xs text-slate-300">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5" />
+                    <div key={idx} className="flex items-start gap-2 text-xs text-slate-600">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-blue-700 shrink-0 mt-0.5" />
                       <span>{item}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="mt-6 pt-3 border-t border-slate-800 flex justify-end">
+              <div className="mt-6 pt-3 border-t border-slate-100 flex justify-end">
                 <button
                   onClick={() => {
                     setUserRole(s.role as any);
                     setCurrentView('dashboard');
                   }}
-                  className="px-4 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 text-xs font-semibold flex items-center gap-1.5 transition-all"
+                  className="px-4 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-2xs"
                 >
                   <span>Launch {s.title} Portal</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
-            </GlassCard>
+            </div>
           );
         })}
       </div>
