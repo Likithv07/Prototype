@@ -46,6 +46,7 @@ export const Sidebar: React.FC = () => {
           { id: 'dashboard', label: 'National Dashboard', icon: Landmark },
           { id: 'projects', label: 'National Projects', icon: FolderKanban },
           { id: 'gis_map', label: 'GIS Command Center', icon: Compass },
+          { id: 'compensation', label: 'Statutory Awards & DBT', icon: Calculator },
           { id: 'ai_analytics', label: 'AI Risk Analytics', icon: Sparkles, badge: 'AI' },
           { id: 'timeline_monitoring', label: 'Timeline & Delays', icon: Clock },
           { id: 'rr_dashboard', label: 'R&R Resettlement', icon: HeartHandshake },

@@ -82,7 +82,18 @@ interface AppContextType {
   toasts: ToastData[];
   showToast: (message: string, type?: 'success' | 'info' | 'warning' | 'danger') => void;
   removeToast: (id: string) => void;
-  updateCompensation: (parcelId: string, updates: Partial<LandParcel['compensation']>) => void;
+  updateCompensation: (
+    parcelId: string,
+    updates: Partial<LandParcel['compensation']> & {
+      areaAcres?: number;
+      marketValuePerAcre?: number;
+      multiplierFactor?: number;
+      assetValuation?: number;
+      totalCompensation?: number;
+      solatium?: number;
+      baseCompensation?: number;
+    }
+  ) => void;
   approveCompensation: (parcelId: string, remarks?: string, notes?: string) => void;
   rejectCompensation: (parcelId: string, reason: string) => void;
   requestDocuments: (parcelId: string, docsNote: string) => void;
@@ -207,22 +218,40 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setAuditLogs((prev) => [newLog, ...prev]);
   };
 
-  const updateCompensation = (parcelId: string, updates: Partial<LandParcel['compensation']>) => {
+  const updateCompensation = (
+    parcelId: string,
+    updates: Partial<LandParcel['compensation']> & {
+      areaAcres?: number;
+      marketValuePerAcre?: number;
+      multiplierFactor?: number;
+      assetValuation?: number;
+      totalCompensation?: number;
+      solatium?: number;
+      baseCompensation?: number;
+    }
+  ) => {
     setLandParcels((prev) =>
       prev.map((parcel) => {
         if (parcel.id === parcelId) {
           const comp = { ...parcel.compensation, ...updates };
-          const recalculatedTotal =
+          const finalTotal =
+            updates.totalCompensation ||
+            comp.totalCompensation ||
             (comp.baseCompensation || 0) +
-            (comp.solatium || 0) +
-            (comp.additionalBenefits || 0) +
-            (comp.rrAssistance || 0);
+              (comp.solatium || 0) +
+              (comp.additionalBenefits || 0) +
+              (comp.rrAssistance || 0);
 
           return {
             ...parcel,
+            areaAcres: updates.areaAcres ?? parcel.areaAcres,
+            marketValuePerAcre: updates.marketValuePerAcre ?? parcel.marketValuePerAcre,
+            multiplierFactor: updates.multiplierFactor ?? parcel.multiplierFactor,
+            assetValuation: updates.assetValuation ?? parcel.assetValuation,
+            totalCompensation: finalTotal,
             compensation: {
               ...comp,
-              totalCompensation: recalculatedTotal,
+              totalCompensation: finalTotal,
             },
           };
         }

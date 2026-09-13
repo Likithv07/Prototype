@@ -22,6 +22,7 @@ import { ProjectsList } from './components/projects/ProjectsList';
 import { ProjectDetails } from './components/projects/ProjectDetails';
 import { GisMap } from './components/gis/GisMap';
 import { CompensationApproval } from './components/compensation/CompensationApproval';
+import { CitizenCompensation } from './components/citizen/CitizenCompensation';
 import { FieldEvidenceUpload } from './components/field/FieldEvidenceUpload';
 import { GrievancePortal } from './components/citizen/GrievancePortal';
 import { DocumentsRepository } from './components/documents/DocumentsRepository';
@@ -35,6 +36,7 @@ import { AccessRestricted } from './components/common/AccessRestricted';
 
 const AppContent: React.FC = () => {
   const { currentView, userRole } = useApp();
+  const [dashboardMode, setDashboardMode] = React.useState<'authority' | 'sector'>('authority');
 
   // Render view based on state
   const renderView = () => {
@@ -48,8 +50,70 @@ const AppContent: React.FC = () => {
       case 'login':
         return <LoginPage />;
 
-      case 'dashboard':
-        return userRole === 'citizen' ? <CitizenDashboard /> : <SectorDashboard />;
+      case 'dashboard': {
+        if (userRole === 'citizen') {
+          return <CitizenDashboard />;
+        }
+
+        const renderActiveDashboard = () => {
+          if (dashboardMode === 'sector') {
+            return <SectorDashboard />;
+          }
+          switch (userRole) {
+            case 'central':
+              return <CentralDashboard />;
+            case 'state':
+              return <StateDashboard />;
+            case 'officer':
+            case 'field_officer':
+              return <OfficerDashboard />;
+            case 'admin':
+            default:
+              return <CentralDashboard />;
+          }
+        };
+
+        return (
+          <div className="space-y-4">
+            {/* View Mode Switcher for Administrative Roles */}
+            <div className="flex flex-wrap items-center justify-between gap-3 bg-white border border-slate-200/90 p-2.5 rounded-2xl shadow-2xs">
+              <div className="flex items-center gap-1.5 bg-slate-100/90 p-1 rounded-xl border border-slate-200 text-xs">
+                <button
+                  onClick={() => setDashboardMode('authority')}
+                  className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${
+                    dashboardMode === 'authority'
+                      ? 'bg-white text-blue-950 shadow-2xs border border-slate-200/80 font-bold'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  {userRole === 'central'
+                    ? 'National Strategic Apex (PRAGATI)'
+                    : userRole === 'state'
+                    ? 'State Directorate Overview'
+                    : userRole === 'officer'
+                    ? 'District LAO Administration'
+                    : 'Strategic Authority View'}
+                </button>
+                <button
+                  onClick={() => setDashboardMode('sector')}
+                  className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${
+                    dashboardMode === 'sector'
+                      ? 'bg-white text-blue-950 shadow-2xs border border-slate-200/80 font-bold'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Sector Operations (MoRTH / Railways / Power)
+                </button>
+              </div>
+              <div className="text-[11px] text-slate-500 font-medium px-2">
+                Active Console: <span className="text-slate-900 font-semibold">{dashboardMode === 'authority' ? 'Statutory Revenue Authority' : 'Line Ministry Operations'}</span>
+              </div>
+            </div>
+
+            {renderActiveDashboard()}
+          </div>
+        );
+      }
 
       case 'projects':
         if (userRole === 'citizen') {
@@ -70,21 +134,24 @@ const AppContent: React.FC = () => {
         return <GisMap />;
 
       case 'compensation':
+        if (userRole === 'citizen') {
+          return <CitizenCompensation />;
+        }
         return <CompensationApproval />;
 
       case 'citizen_compensation':
-        return <CitizenDashboard />;
+        return <CitizenCompensation />;
 
       case 'citizen_land':
-        if (userRole === 'citizen') {
-          return <AccessRestricted moduleName="GIS Cadastral Geodatabase & Spatial Mapping" />;
-        }
-        return <GisMap />;
+        return <CitizenDashboard />;
 
       case 'field_upload':
         return <FieldEvidenceUpload />;
 
       case 'consent':
+        if (userRole === 'field_officer') {
+          return <FieldEvidenceUpload />;
+        }
         return <CitizenDashboard />;
 
       case 'grievance':
@@ -123,8 +190,8 @@ const AppContent: React.FC = () => {
       {/* Top Navbar */}
       <Navbar />
 
-      {/* Interactive National 10-Stage Workflow Stepper shown only on project detail & lifecycle views */}
-      {!isFullscreenLanding && currentView !== 'dashboard' && (
+      {/* Interactive National 10-Stage Workflow Stepper shown only on project detail & lifecycle views for administrative users */}
+      {!isFullscreenLanding && currentView !== 'dashboard' && userRole !== 'citizen' && (
         <WorkflowStepper />
       )}
 
