@@ -240,6 +240,8 @@ export interface AuditLogEntry {
   module: string;
   details: string;
   parcelId?: string;
+  ipAddress?: string;
+  txHash?: string;
 }
 
 export interface NotificationItem {

@@ -95,6 +95,7 @@ export const Sidebar: React.FC = () => {
       case 'citizen':
         return [
           { id: 'dashboard', label: 'My Land Acquisition', icon: LayoutDashboard },
+          { id: 'citizen_land', label: 'Land Demarcation (FMB)', icon: Compass },
           { id: 'citizen_compensation', label: 'My Compensation', icon: CreditCard, badge: '₹72.25L' },
           { id: 'consent', label: 'Digital Consent eSign', icon: FileCheck },
           { id: 'grievance', label: 'Raise a Grievance', icon: MessageSquarePlus },

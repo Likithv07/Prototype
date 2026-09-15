@@ -27,7 +27,7 @@ import {
 } from 'lucide-react';
 
 export const LandingPage: React.FC = () => {
-  const { setCurrentView, setActiveSector, setSelectedParcelId, showToast } = useApp();
+  const { setCurrentView, setActiveSector, loginAsSector, setSelectedParcelId, showToast } = useApp();
   const [trackingId, setTrackingId] = useState('');
   const [searchResult, setSearchResult] = useState<any | null>(null);
 
@@ -53,8 +53,7 @@ export const LandingPage: React.FC = () => {
   };
 
   const handleEnterSector = (sectorKey: SectorType) => {
-    setActiveSector(sectorKey);
-    setCurrentView('login');
+    loginAsSector(sectorKey);
   };
 
   const getSectorIcon = (sec: SectorType) => {
@@ -262,19 +261,20 @@ export const LandingPage: React.FC = () => {
             return (
               <div
                 key={secKey}
-                className="p-5 rounded-xl bg-white border border-slate-200/90 hover:border-blue-300 hover:shadow-sm transition-all flex flex-col justify-between"
+                onClick={() => handleEnterSector(secKey)}
+                className="p-5 rounded-xl bg-white border border-slate-200/90 hover:border-blue-400 card-hover flex flex-col justify-between cursor-pointer group"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">
                     <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
                       {sec.badge}
                     </span>
-                    <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-800 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-800 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
                       <IconComponent className="w-4 h-4" />
                     </div>
                   </div>
 
-                  <h3 className="text-sm font-bold text-slate-900">{sec.name}</h3>
+                  <h3 className="text-sm font-bold text-slate-900 group-hover:text-blue-900 transition-colors">{sec.name}</h3>
                   <span className="text-[11px] font-semibold text-blue-700 block mt-0.5">
                     {sec.department}
                   </span>
@@ -285,12 +285,15 @@ export const LandingPage: React.FC = () => {
 
                 <div className="mt-5 pt-3 border-t border-slate-100">
                   <button
-                    onClick={() => handleEnterSector(secKey)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEnterSector(secKey);
+                    }}
                     id={`enter-sector-${secKey}`}
-                    className="w-full py-2 px-3 rounded-lg bg-blue-50 hover:bg-blue-700 hover:text-white text-blue-900 border border-blue-200 text-xs font-semibold transition-all flex items-center justify-center gap-1.5"
+                    className="w-full py-2 px-3 rounded-lg bg-blue-50 group-hover:bg-blue-700 group-hover:text-white text-blue-900 border border-blue-200 text-xs font-semibold btn-hover flex items-center justify-center gap-1.5"
                   >
-                    <span>Enter {sec.shortName} Portal</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
+                    <span>Instant Launch {sec.shortName} Portal</span>
+                    <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
                   </button>
                 </div>
               </div>

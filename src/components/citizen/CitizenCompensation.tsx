@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { StatusBadge } from '../common/StatusBadge';
 import {
@@ -19,6 +19,7 @@ import {
   ChevronRight,
   Landmark,
   Scale,
+  RefreshCw,
 } from 'lucide-react';
 
 export const CitizenCompensation: React.FC = () => {
@@ -29,9 +30,17 @@ export const CitizenCompensation: React.FC = () => {
     setCurrentView,
     showToast,
     addAuditLog,
+    submitConsent,
+    addGrievance,
+    refreshData,
+    isRefreshing,
+    lastSyncedAt,
   } = useApp();
 
-  const [consentGiven, setConsentGiven] = useState(false);
+  useEffect(() => {
+    refreshData();
+  }, []);
+
   const [showConsentModal, setShowConsentModal] = useState(false);
   const [showDisputeModal, setShowDisputeModal] = useState(false);
   const [disputeReason, setDisputeReason] = useState('');
@@ -61,6 +70,7 @@ export const CitizenCompensation: React.FC = () => {
       multiplierFactor: 1.5,
       assetValuation: 350000,
       totalCompensation: 7225000,
+      consentReceived: false,
       compensation: {
         governmentRatePerAcre: 2500000,
         baseCompensation: 6250000,
@@ -87,7 +97,7 @@ export const CitizenCompensation: React.FC = () => {
     multipliedLandValue + assetsVal + solatium + interestAmount;
 
   const handleEsignConsent = () => {
-    setConsentGiven(true);
+    submitConsent(parcel.id);
     setShowConsentModal(false);
     showToast('Aadhaar OTP verified. Award acceptance registered with Treasury CALA.', 'success');
     addAuditLog(
@@ -103,8 +113,16 @@ export const CitizenCompensation: React.FC = () => {
       showToast('Please specify grievance grounds', 'warning');
       return;
     }
+    addGrievance({
+      parcelId: parcel.id,
+      citizenName: parcel.landownerName,
+      mobile: parcel.landownerMobile || '9876543210',
+      category: 'Compensation Dispute',
+      subject: `Section 64 Objection: Sy ${parcel.surveyNumber}`,
+      description: disputeReason,
+    });
     setShowDisputeModal(false);
-    showToast('Objection logged under RFCTLARR Section 64. Reference ID: GRV-2026-9104', 'info');
+    showToast('Objection logged under RFCTLARR Section 64. Ref ID generated.', 'success');
     addAuditLog(
       'Section 64 Objection Filed',
       'Citizen Compensation Portal',
@@ -114,8 +132,50 @@ export const CitizenCompensation: React.FC = () => {
     setDisputeReason('');
   };
 
+  const handleDownloadAwardCertificate = () => {
+    const certText = `================================================================================
+GOVERNMENT OF INDIA - MINISTRY OF ROAD TRANSPORT & HIGHWAYS
+COMPETENT AUTHORITY FOR LAND ACQUISITION (CALA)
+FORM 16-C STATUTORY COMPENSATION AWARD PASSBOOK
+================================================================================
+PARCEL ID             : ${parcel.id}
+SURVEY NUMBER         : ${parcel.surveyNumber}
+LANDOWNER NAME        : ${parcel.landownerName}
+PROJECT               : ${parcel.projectName}
+ACQUIRED AREA         : ${parcel.areaAcres} Acres (${parcel.landType})
+MANDAL / VILLAGE      : ${parcel.village}, ${parcel.district}
+
+================================================================================
+DETAILED STATUTORY BREAKDOWN (RFCTLARR ACT 2013)
+================================================================================
+Basic Market Value    : ₹${baseLandValue.toLocaleString('en-IN')}
+Multiplier Factor     : ${multiplier}x
+Multiplied Base Value : ₹${multipliedLandValue.toLocaleString('en-IN')}
+Immovable Assets      : ₹${assetsVal.toLocaleString('en-IN')}
+100% Solatium         : ₹${solatium.toLocaleString('en-IN')}
+12% Statutory Interest: ₹${Math.round(interestAmount).toLocaleString('en-IN')}
+--------------------------------------------------------------------------------
+TOTAL STATUTORY AWARD : ₹${Math.round(totalAward).toLocaleString('en-IN')}
+================================================================================
+eSign Status          : ${parcel.consentReceived ? 'COMPLETED & VERIFIED' : 'PENDING ACTION'}
+PFMS DBT Route        : Direct Benefit Transfer (State Bank of India)
+CALA Seal             : DIGITAL-SEAL-VERIFIED-${parcel.id}
+================================================================================`;
+
+    const blob = new Blob([certText], { type: 'text/plain;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Compensation_Award_${parcel.surveyNumber.replace(/\//g, '_')}_${parcel.id}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showToast('Downloaded official Form 16-C Award Certificate', 'success');
+  };
+
   return (
-    <div className="space-y-6 pb-20">
+    <div className="space-y-6 pb-20 animate-fade-in">
       {/* Top Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
@@ -129,19 +189,27 @@ export const CitizenCompensation: React.FC = () => {
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-            My Statutory Compensation & DBT Passbook
+            My Statutory Compensation &amp; DBT Passbook
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-3xl">
             Official breakdown of your land acquisition award under Right to Fair Compensation and Transparency in Land Acquisition (RFCTLARR) Act, 2013.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
-            onClick={() => {
-              showToast('Official Form 16-C Award Passbook PDF downloading...', 'success');
-            }}
-            className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center gap-2 border border-slate-200 transition-colors shadow-2xs cursor-pointer"
+            onClick={() => refreshData()}
+            disabled={isRefreshing}
+            className="px-3 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold flex items-center gap-1.5 shadow-2xs btn-hover cursor-pointer"
+            title={`Last synced: ${lastSyncedAt}`}
+          >
+            <RefreshCw className={`w-3.5 h-3.5 text-blue-700 ${isRefreshing ? 'animate-spin' : ''}`} />
+            <span className="hidden sm:inline">{isRefreshing ? 'Syncing...' : 'Sync Data'}</span>
+          </button>
+
+          <button
+            onClick={handleDownloadAwardCertificate}
+            className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center gap-2 border border-slate-200 transition-colors shadow-2xs btn-hover cursor-pointer"
           >
             <Download className="w-4 h-4 text-slate-600" />
             <span>Download Award Certificate</span>
@@ -193,7 +261,7 @@ export const CitizenCompensation: React.FC = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row md:flex-col gap-2.5 shrink-0">
-            {consentGiven ? (
+            {parcel.consentReceived || consentGiven ? (
               <div className="px-4 py-2.5 rounded-xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-semibold flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                 <span>eSign Consent Verified</span>
@@ -201,7 +269,7 @@ export const CitizenCompensation: React.FC = () => {
             ) : (
               <button
                 onClick={() => setShowConsentModal(true)}
-                className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-colors cursor-pointer"
+                className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-colors cursor-pointer btn-hover"
               >
                 <Fingerprint className="w-4 h-4" />
                 <span>Aadhaar eSign Consent</span>

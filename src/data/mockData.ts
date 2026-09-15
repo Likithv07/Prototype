@@ -949,6 +949,57 @@ export const STATES_DATA: StateData[] = [
   },
 ];
 
+export const INITIAL_AFFECTED_FAMILIES: AffectedFamily[] = [
+  {
+    familyId: 'PAF-TS-00101',
+    headOfFamily: 'Smt. Lakshmi Devi & Family',
+    village: 'Ghatkesar',
+    district: 'Hyderabad',
+    familyMembersCount: 5,
+    category: 'OBC',
+    rehabilitationStatus: 'Fully Resettled',
+    homesteadAllottedUnit: 'Bhoomi Awas Enclave, Unit A-104',
+    subsistenceAllowancePaid: 360000,
+    skillTrainingEnrolledTrade: 'Solar PV Technician & Electrician (PMKVY)',
+  },
+  {
+    familyId: 'PAF-TS-00102',
+    headOfFamily: 'Shri Ramulu Badavath',
+    village: 'Ghatkesar',
+    district: 'Hyderabad',
+    familyMembersCount: 6,
+    category: 'ST',
+    rehabilitationStatus: 'Homestead Allotted',
+    homesteadAllottedUnit: 'Bhoomi Awas Enclave, Unit B-212',
+    subsistenceAllowancePaid: 240000,
+    skillTrainingEnrolledTrade: 'Organic Farm Producer & Horticulture',
+  },
+  {
+    familyId: 'PAF-TS-00103',
+    headOfFamily: 'Shri Malleshwar Rao',
+    village: 'Malkajgiri',
+    district: 'Hyderabad',
+    familyMembersCount: 4,
+    category: 'General',
+    rehabilitationStatus: 'Subsistence Disbursed',
+    homesteadAllottedUnit: 'Pragati Nagar Township, Unit C-015',
+    subsistenceAllowancePaid: 300000,
+    skillTrainingEnrolledTrade: 'Heavy Vehicle Commercial Driving',
+  },
+  {
+    familyId: 'PAF-TS-00104',
+    headOfFamily: 'Smt. Saraswathi Bai',
+    village: 'Pocharam',
+    district: 'Hyderabad',
+    familyMembersCount: 3,
+    category: 'SC',
+    rehabilitationStatus: 'Identified',
+    homesteadAllottedUnit: 'Under Allotment (Bhoomi Awas Phase II)',
+    subsistenceAllowancePaid: 150000,
+    skillTrainingEnrolledTrade: 'Apparel Stitching & Garment Craft',
+  },
+];
+
 export const SCOPE_OF_STUDY_DATA = [
   {
     sno: 1,

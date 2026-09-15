@@ -33,6 +33,8 @@ import { TimelineMonitoring } from './components/timeline/TimelineMonitoring';
 import { AiAnalytics } from './components/analytics/AiAnalytics';
 import { SectorDashboard } from './components/dashboards/SectorDashboard';
 import { AccessRestricted } from './components/common/AccessRestricted';
+import { ConsentPortal } from './components/consent/ConsentPortal';
+import { CitizenLandDemarcation } from './components/citizen/CitizenLandDemarcation';
 
 const AppContent: React.FC = () => {
   const { currentView, userRole } = useApp();
@@ -143,16 +145,16 @@ const AppContent: React.FC = () => {
         return <CitizenCompensation />;
 
       case 'citizen_land':
-        return <CitizenDashboard />;
+        return <CitizenLandDemarcation />;
 
       case 'field_upload':
+        if (userRole === 'citizen') {
+          return <AccessRestricted moduleName="DGPS Field Survey & Geotagged Evidence Upload" />;
+        }
         return <FieldEvidenceUpload />;
 
       case 'consent':
-        if (userRole === 'field_officer') {
-          return <FieldEvidenceUpload />;
-        }
-        return <CitizenDashboard />;
+        return <ConsentPortal />;
 
       case 'grievance':
         return <GrievancePortal />;

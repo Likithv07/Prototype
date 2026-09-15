@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { StatusBadge } from '../common/StatusBadge';
 import { CitizenAiChatbot } from './CitizenAiChatbot';
 import {
   MapPin,
+  Compass,
   CreditCard,
   CheckCircle2,
   Clock,
@@ -22,16 +23,27 @@ import {
   Building,
   HelpCircle,
   Landmark,
+  RefreshCw,
 } from 'lucide-react';
 
 export const CitizenDashboard: React.FC = () => {
   const {
     landParcels,
     selectedParcelId,
+    setSelectedParcelId,
     setCurrentView,
     submitConsent,
     showToast,
+    refreshData,
+    isRefreshing,
+    lastSyncedAt,
+    grievances,
   } = useApp();
+
+  // Fresh data refresh on component mount
+  useEffect(() => {
+    refreshData();
+  }, []);
 
   // Find user's parcel (default to primary demo parcel)
   const citizenParcel =
@@ -41,10 +53,71 @@ export const CitizenDashboard: React.FC = () => {
   const [showAiChatbot, setShowAiChatbot] = useState(false);
   const [aadhaarOtp, setAadhaarOtp] = useState('781923');
 
+  // Filter grievances relevant to this parcel or citizen
+  const citizenGrievances = grievances.filter(
+    (g) =>
+      g.parcelId === citizenParcel.id ||
+      g.citizenName.toLowerCase().includes(citizenParcel.landownerName.toLowerCase())
+  );
+
   const handleExecuteESign = () => {
     submitConsent(citizenParcel.id);
     setShowSignModal(false);
     showToast('Aadhaar eSign Consent verified and recorded on Blockchain', 'success');
+  };
+
+  const handleDownloadForm16C = () => {
+    const totalComp = citizenParcel.totalCompensation || citizenParcel.compensation?.totalCompensation || 7225000;
+    const baseLand = citizenParcel.compensation?.baseCompensation || Math.round(citizenParcel.areaAcres * (citizenParcel.marketValuePerAcre || 2500000) * (citizenParcel.multiplierFactor || 1.5));
+    const solatium = citizenParcel.compensation?.solatium || Math.round(totalComp * 0.45);
+    const assetVal = citizenParcel.compensation?.additionalBenefits || citizenParcel.assetValuation || 350000;
+
+    const certText = `================================================================================
+GOVERNMENT OF INDIA - MINISTRY OF ROAD TRANSPORT & HIGHWAYS
+COMPETENT AUTHORITY FOR LAND ACQUISITION (CALA)
+FORM 16-C STATUTORY COMPENSATION AWARD CERTIFICATE
+[Under Section 23, 26, 27, 28, 29 & 30 of RFCTLARR Act, 2013]
+================================================================================
+PARCEL REFERENCE ID    : ${citizenParcel.id}
+SURVEY NUMBER          : ${citizenParcel.surveyNumber}
+BENEFICIARY NAME       : ${citizenParcel.landownerName}
+AADHAAR (MASKED)       : ${citizenParcel.landownerAadhaar || citizenParcel.maskedAadhaar}
+REVENUE VILLAGE        : ${citizenParcel.village}, Mandal: Ghatkesar, Dist: ${citizenParcel.district}
+ACQUIRED EXTENT        : ${citizenParcel.areaAcres} Acres (${citizenParcel.landType})
+INFRASTRUCTURE PROJECT : ${citizenParcel.projectName}
+
+================================================================================
+STATUTORY COMPENSATION & VALUATION SUMMARY
+================================================================================
+1. Basic Land Value (Market Rate x Multiplier)    : ₹${baseLand.toLocaleString('en-IN')}
+2. Immovable Assets (Trees, Well, Structures)     : ₹${assetVal.toLocaleString('en-IN')}
+3. Statutory Solatium (100% Mandatory)            : ₹${solatium.toLocaleString('en-IN')}
+4. Additional Interest under Section 30(3)        : ₹${Math.round(baseLand * 0.1).toLocaleString('en-IN')}
+--------------------------------------------------------------------------------
+TOTAL STATUTORY AWARD (NET PAYABLE)               : ₹${totalComp.toLocaleString('en-IN')}
+================================================================================
+DISBURSAL DETAILS
+Bank Mandate          : State Bank of India (•••4892)
+PFMS Authorization    : PFMS-GOI-2026-88194
+eSign Consent Status  : ${citizenParcel.consentReceived ? 'VERIFIED VIA AADHAAR OTP (' + citizenParcel.consentDate + ')' : 'ACTION REQUIRED'}
+PFMS DBT Status       : ${citizenParcel.compensationStatus}
+CALA Digital Seal     : SHA256:${citizenParcel.id.replace(/-/g, '')}7f8a912b4e89
+================================================================================
+This is a legally binding statutory compensation certificate issued under 
+the Seal of the Collector & District Magistrate.
+================================================================================`;
+
+    const blob = new Blob([certText], { type: 'text/plain;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Form_16C_Award_${citizenParcel.surveyNumber.replace(/\//g, '_')}_${citizenParcel.id}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    showToast(`Downloaded Form 16-C Award Certificate for Survey No. ${citizenParcel.surveyNumber}`, 'success');
   };
 
   const steps = [
@@ -62,31 +135,58 @@ export const CitizenDashboard: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-6 pb-20 relative">
+    <div className="space-y-6 pb-20 relative animate-fade-in">
       {/* Top Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div>
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-blue-700" />
             <span className="text-xs uppercase font-mono text-blue-900 font-bold tracking-wider">
-              Citizen Direct Benefits & Land Transparency Window
+              Citizen Direct Benefits &amp; Land Transparency Window
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mt-1">
-            My Land Acquisition & Compensation
+            My Land Acquisition &amp; Compensation
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 mt-0.5">
             Official records for <strong className="text-slate-900 font-semibold">Shri {citizenParcel.landownerName}</strong> • Aadhaar{' '}
-            <span className="font-mono text-slate-700">{citizenParcel.landownerAadhaar}</span>
+            <span className="font-mono text-slate-700">{citizenParcel.landownerAadhaar || citizenParcel.maskedAadhaar}</span>
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Parcel Switcher */}
+          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs">
+            <span className="text-slate-500 font-medium">Parcel:</span>
+            <select
+              value={citizenParcel.id}
+              onChange={(e) => setSelectedParcelId(e.target.value)}
+              className="bg-transparent font-bold text-blue-900 focus:outline-none cursor-pointer text-xs"
+            >
+              {landParcels.map((p) => (
+                <option key={p.id} value={p.id}>
+                  Sy {p.surveyNumber} ({p.village})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Live Sync / Refresh Button */}
+          <button
+            onClick={() => refreshData()}
+            disabled={isRefreshing}
+            className="px-3 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold flex items-center gap-1.5 shadow-2xs btn-hover cursor-pointer"
+            title={`Last synced: ${lastSyncedAt}`}
+          >
+            <RefreshCw className={`w-3.5 h-3.5 text-blue-700 ${isRefreshing ? 'animate-spin' : ''}`} />
+            <span className="hidden sm:inline">{isRefreshing ? 'Syncing...' : 'Sync Data'}</span>
+          </button>
+
           {/* AI Chatbot Trigger Button */}
           <button
             onClick={() => setShowAiChatbot(true)}
             id="citizen-ask-ai-btn"
-            className="px-3.5 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-semibold flex items-center gap-2 shadow-2xs transition-colors"
+            className="px-3.5 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-semibold flex items-center gap-2 shadow-2xs btn-hover transition-colors cursor-pointer"
           >
             <Bot className="w-4 h-4 text-blue-200" />
             <span>Ask BhoomiMitra AI</span>
@@ -95,12 +195,87 @@ export const CitizenDashboard: React.FC = () => {
 
           <button
             onClick={() => setCurrentView('grievance')}
-            className="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold flex items-center gap-1.5 shadow-2xs transition-colors"
+            className="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold flex items-center gap-1.5 shadow-2xs btn-hover transition-colors cursor-pointer"
           >
             <MessageSquarePlus className="w-3.5 h-3.5 text-slate-500" />
             <span>Raise a Grievance</span>
           </button>
         </div>
+      </div>
+
+      {/* Action Quick Navigation Tiles */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <button
+          onClick={() => setCurrentView('citizen_land')}
+          className="p-4 rounded-xl bg-white border border-slate-200/90 hover:border-blue-400 card-hover text-left flex flex-col justify-between cursor-pointer group"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <Compass className="w-5 h-5 text-blue-700 group-hover:scale-110 transition-transform" />
+            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+          </div>
+          <div>
+            <span className="text-xs font-bold text-slate-900 block group-hover:text-blue-900 transition-colors">
+              Land &amp; Demarcation
+            </span>
+            <span className="text-[11px] text-slate-500">
+              FMB Pillars &amp; Geometry
+            </span>
+          </div>
+        </button>
+
+        <button
+          onClick={() => setCurrentView('citizen_compensation')}
+          className="p-4 rounded-xl bg-white border border-slate-200/90 hover:border-emerald-400 card-hover text-left flex flex-col justify-between cursor-pointer group"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <CreditCard className="w-5 h-5 text-emerald-700 group-hover:scale-110 transition-transform" />
+            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+          </div>
+          <div>
+            <span className="text-xs font-bold text-slate-900 block group-hover:text-emerald-900 transition-colors">
+              My Compensation
+            </span>
+            <span className="text-[11px] text-emerald-800 font-semibold font-mono">
+              ₹{(((citizenParcel.totalCompensation || citizenParcel.compensation?.totalCompensation || 7225000)) / 100000).toFixed(2)}L Sanctioned
+            </span>
+          </div>
+        </button>
+
+        <button
+          onClick={() => setCurrentView('consent')}
+          className="p-4 rounded-xl bg-white border border-slate-200/90 hover:border-blue-400 card-hover text-left flex flex-col justify-between cursor-pointer group"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <FileCheck className="w-5 h-5 text-blue-700 group-hover:scale-110 transition-transform" />
+            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+          </div>
+          <div>
+            <span className="text-xs font-bold text-slate-900 block group-hover:text-blue-900 transition-colors">
+              Form 7 eSign Consent
+            </span>
+            <span className="text-[11px] text-slate-500">
+              {citizenParcel.consentReceived ? '✓ Signed & Verified' : 'Action Required'}
+            </span>
+          </div>
+        </button>
+
+        <button
+          onClick={() => setCurrentView('grievance')}
+          className="p-4 rounded-xl bg-white border border-slate-200/90 hover:border-amber-400 card-hover text-left flex flex-col justify-between cursor-pointer group"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <MessageSquarePlus className="w-5 h-5 text-amber-600 group-hover:scale-110 transition-transform" />
+            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+          </div>
+          <div>
+            <span className="text-xs font-bold text-slate-900 block group-hover:text-amber-900 transition-colors">
+              Raise a Grievance
+            </span>
+            <span className="text-[11px] text-slate-500">
+              {citizenGrievances.length > 0 ? `${citizenGrievances.length} Active Records` : 'Disputes & Corrections'}
+            </span>
+          </div>
+        </button>
       </div>
 
       {/* Main Land Card & Live Compensation Summary */}
@@ -183,7 +358,7 @@ export const CitizenDashboard: React.FC = () => {
 
             {citizenParcel.consentReceived ? (
               <p className="text-xs text-emerald-900">
-                Consent form digitally eSigned on {citizenParcel.consentDate} via Aadhaar eSign
+                Consent form digitally eSigned on {citizenParcel.consentDate || 'Recently'} via Aadhaar eSign
                 OTP verification. Award is queued for final PFMS treasury transfer.
               </p>
             ) : (
@@ -194,7 +369,7 @@ export const CitizenDashboard: React.FC = () => {
                 </p>
                 <button
                   onClick={() => setShowSignModal(true)}
-                  className="px-4 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs shadow-2xs flex items-center gap-2 transition-colors"
+                  className="px-4 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs shadow-2xs flex items-center gap-2 transition-colors btn-hover cursor-pointer"
                 >
                   <Fingerprint className="w-4 h-4" />
                   <span>Execute Aadhaar eSign Consent Now</span>
@@ -225,7 +400,7 @@ export const CitizenDashboard: React.FC = () => {
                 ₹{(citizenParcel.compensation?.totalCompensation || citizenParcel.totalCompensation || 0).toLocaleString('en-IN')}
               </span>
               <p className="text-[11px] text-emerald-800 mt-1">
-                Inclusive of 100% Solatium (₹33.75L) & Asset Valuation (₹4.75L)
+                Inclusive of 100% Solatium (₹{Math.round((citizenParcel.totalCompensation || 7225000) * 0.45).toLocaleString('en-IN')}) &amp; Asset Valuation
               </p>
             </div>
 
@@ -233,7 +408,7 @@ export const CitizenDashboard: React.FC = () => {
               <div className="flex justify-between text-slate-600 border-b border-slate-100 pb-1.5">
                 <span>Beneficiary Account:</span>
                 <span className="font-mono text-slate-900 font-semibold">
-                  State Bank of India (•••4892)
+                  {citizenParcel.maskedBankAccount || 'State Bank of India (•••4892)'}
                 </span>
               </div>
               <div className="flex justify-between text-slate-600 border-b border-slate-100 pb-1.5">
@@ -255,8 +430,8 @@ export const CitizenDashboard: React.FC = () => {
 
           <div className="mt-6 pt-3 border-t border-slate-100">
             <button
-              onClick={() => showToast('Downloaded Form 16-C Award Certificate PDF', 'success')}
-              className="w-full py-2.5 px-4 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold flex items-center justify-center gap-2 border border-slate-200 transition-colors shadow-2xs"
+              onClick={handleDownloadForm16C}
+              className="w-full py-2.5 px-4 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold flex items-center justify-center gap-2 border border-slate-200 transition-colors shadow-2xs btn-hover cursor-pointer"
             >
               <Download className="w-4 h-4 text-blue-700" />
               <span>Download Form 16-C Award Certificate</span>
@@ -308,11 +483,67 @@ export const CitizenDashboard: React.FC = () => {
         </div>
       </div>
 
+      {/* Citizen's Filed Grievances Section */}
+      {citizenGrievances.length > 0 && (
+        <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-2xs">
+          <div className="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+            <div className="flex items-center gap-2">
+              <MessageSquarePlus className="w-5 h-5 text-amber-600" />
+              <h2 className="text-base font-bold text-slate-900">
+                My Filed Grievances &amp; Objections ({citizenGrievances.length})
+              </h2>
+            </div>
+            <button
+              onClick={() => setCurrentView('grievance')}
+              className="text-xs font-semibold text-blue-700 hover:text-blue-900 flex items-center gap-1"
+            >
+              <span>View All Grievances</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          <div className="space-y-3">
+            {citizenGrievances.map((g) => (
+              <div
+                key={g.id}
+                className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+              >
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="font-mono text-xs font-bold text-blue-900 bg-white px-2 py-0.5 rounded border border-slate-200">
+                      {g.id}
+                    </span>
+                    <span className="text-xs font-semibold text-slate-800">{g.category}</span>
+                    <span className="text-[11px] text-slate-500">• Filed on {g.submittedDate}</span>
+                  </div>
+                  <h4 className="text-xs font-bold text-slate-900">{g.subject}</h4>
+                  <p className="text-xs text-slate-600 mt-0.5 line-clamp-1">{g.description}</p>
+                </div>
+
+                <div className="flex items-center gap-3 shrink-0">
+                  <span
+                    className={`px-2.5 py-1 rounded-full text-xs font-bold border ${
+                      g.status === 'Resolved'
+                        ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                        : g.status === 'Under Review'
+                        ? 'bg-blue-50 text-blue-800 border-blue-300'
+                        : 'bg-amber-50 text-amber-800 border-amber-300'
+                    }`}
+                  >
+                    {g.status}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Floating AI Assistant Trigger Pill */}
       <div className="fixed bottom-6 right-6 z-40">
         <button
           onClick={() => setShowAiChatbot(true)}
-          className="px-4 py-3 rounded-full bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 text-white shadow-xl hover:shadow-2xl flex items-center gap-2.5 transition-transform hover:scale-105 group border border-white/20"
+          className="px-4 py-3 rounded-full bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 text-white shadow-xl hover:shadow-2xl flex items-center gap-2.5 transition-transform hover:scale-105 group border border-white/20 cursor-pointer"
         >
           <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">
             <Bot className="w-4 h-4 text-white" />
@@ -373,16 +604,16 @@ export const CitizenDashboard: React.FC = () => {
             <div className="flex items-center justify-end gap-3">
               <button
                 onClick={() => setShowSignModal(false)}
-                className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-semibold transition-colors"
+                className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-semibold transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleExecuteESign}
-                className="px-5 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold shadow-2xs flex items-center gap-1.5 transition-colors"
+                className="px-5 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold shadow-2xs flex items-center gap-1.5 transition-colors btn-hover cursor-pointer"
               >
                 <ShieldCheck className="w-4 h-4" />
-                <span>Verify & Sign Consent</span>
+                <span>Verify &amp; Sign Consent</span>
               </button>
             </div>
           </div>

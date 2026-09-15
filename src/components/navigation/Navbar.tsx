@@ -26,6 +26,7 @@ export const Navbar: React.FC = () => {
     setCurrentView,
     activeSector,
     setActiveSector,
+    loginAsSector,
     isLoggedIn,
     loggedInUser,
     userRole,
@@ -233,14 +234,12 @@ export const Navbar: React.FC = () => {
                         <button
                           key={s}
                           onClick={() => {
-                            setActiveSector(s);
+                            loginAsSector(s);
                             setShowSectorMenu(false);
-                            setCurrentView('dashboard');
-                            showToast(`Active sector set to ${sec.name}`, 'info');
                           }}
-                          className={`w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-left transition-colors ${
+                          className={`w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-left transition-all btn-hover ${
                             activeSector === s
-                              ? 'bg-blue-50 text-blue-900 font-bold'
+                              ? 'bg-blue-50 text-blue-900 font-bold shadow-2xs'
                               : 'text-slate-700 hover:bg-slate-50 font-medium'
                           }`}
                         >

@@ -98,6 +98,11 @@ interface AppContextType {
   rejectCompensation: (parcelId: string, reason: string) => void;
   requestDocuments: (parcelId: string, docsNote: string) => void;
   addGrievance: (data: { parcelId: string; citizenName: string; mobile: string; category: Grievance['category']; subject: string; description: string }) => string;
+  updateGrievanceStatus: (id: string, status: Grievance['status'], resolutionNote?: string) => void;
+  deleteGrievance: (id: string) => void;
+  lastSyncedAt: string;
+  isRefreshing: boolean;
+  refreshData: () => void;
   addAuditLog: (action: string, module: string, details: string, parcelId?: string) => void;
   markNotificationRead: (id: string) => void;
   markAllNotificationsRead: () => void;
@@ -114,7 +119,22 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [userRole, setUserRole] = useState<UserRole>('officer');
-  const [activeSector, setActiveSector] = useState<SectorType>('highways');
+  const [activeSector, setInternalActiveSector] = useState<SectorType>('highways');
+
+  const setActiveSector = (sector: SectorType) => {
+    setInternalActiveSector(sector);
+    const roleMapping: Record<SectorType, UserRole> = {
+      highways: 'central',
+      railways: 'central',
+      power: 'officer',
+      urban: 'state',
+      revenue: 'officer',
+      citizen: 'citizen',
+    };
+    if (roleMapping[sector]) {
+      setUserRole(roleMapping[sector]);
+    }
+  };
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [loggedInUser, setLoggedInUser] = useState<string | null>(null);
   const [currentView, setCurrentView] = useState<AppView>('landing');
@@ -132,6 +152,19 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>(INITIAL_AUDIT_LOGS);
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
   const [toasts, setToasts] = useState<ToastData[]>([]);
+  const [lastSyncedAt, setLastSyncedAt] = useState<string>(
+    new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
+  );
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+
+  const refreshData = () => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setLastSyncedAt(new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }));
+      setIsRefreshing(false);
+      showToast('Registry synchronized with NIC Land Records & PFMS Gateway', 'success');
+    }, 400);
+  };
 
   const showToast = (message: string, type: 'success' | 'info' | 'warning' | 'danger' = 'info') => {
     const id = Math.random().toString(36).substring(2, 9);
@@ -213,6 +246,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       module,
       details,
       parcelId,
+      ipAddress: '10.244.18.92',
+      txHash: `0x${Math.random().toString(16).substring(2, 10)}${Math.random().toString(16).substring(2, 10)}`,
     };
 
     setAuditLogs((prev) => [newLog, ...prev]);
@@ -371,6 +406,28 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return generatedId;
   };
 
+  const updateGrievanceStatus = (id: string, status: Grievance['status'], resolutionNote?: string) => {
+    setGrievances((prev) =>
+      prev.map((g) =>
+        g.id === id
+          ? {
+              ...g,
+              status,
+              ...(resolutionNote ? { resolutionNote } : {}),
+            }
+          : g
+      )
+    );
+    showToast(`Grievance ${id} status updated to ${status}`, 'success');
+    addAuditLog('Updated Grievance Status', 'Grievance Redressal System', `Status: ${status}${resolutionNote ? ` | ${resolutionNote}` : ''}`, id);
+  };
+
+  const deleteGrievance = (id: string) => {
+    setGrievances((prev) => prev.filter((g) => g.id !== id));
+    showToast(`Grievance ${id} removed from registry`, 'info');
+    addAuditLog('Deleted Grievance Record', 'Grievance Redressal System', `Removed petition ${id}`, id);
+  };
+
   const markNotificationRead = (id: string) => {
     setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
   };
@@ -527,6 +584,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         rejectCompensation,
         requestDocuments,
         addGrievance,
+        updateGrievanceStatus,
+        deleteGrievance,
+        lastSyncedAt,
+        isRefreshing,
+        refreshData,
         addAuditLog,
         markNotificationRead,
         markAllNotificationsRead,

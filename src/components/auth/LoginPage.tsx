@@ -68,10 +68,8 @@ export const LoginPage: React.FC = () => {
     }
 
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      loginAsSector(selectedSector, username);
-    }, 350);
+    loginAsSector(selectedSector, username);
+    setIsLoading(false);
   };
 
   const handleSendOtp = (e: React.FormEvent) => {
