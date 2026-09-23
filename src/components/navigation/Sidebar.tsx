@@ -84,10 +84,10 @@ export const Sidebar: React.FC = () => {
 
       case 'field_officer':
         return [
-          { id: 'dashboard', label: 'Field Dashboard', icon: LayoutDashboard },
-          { id: 'field_upload', label: 'Field Evidence Upload', icon: Camera, badge: 'Active' },
-          { id: 'consent', label: 'Landowner Consent', icon: FileCheck },
-          { id: 'gis_map', label: 'Field GIS Navigation', icon: Compass },
+          { id: 'field_upload', label: 'Field Verification', icon: Camera, badge: 'Rover Active' },
+          { id: 'gis_map', label: 'Field GIS Demarcation', icon: Compass },
+          { id: 'consent', label: 'Spot Landowner Consent', icon: FileCheck },
+          { id: 'citizen_land', label: 'Cadastral FMB Map', icon: Compass },
           { id: 'documents', label: 'Survey Documents', icon: FileText },
           { id: 'timeline_monitoring', label: 'Field Schedule', icon: Clock },
         ];

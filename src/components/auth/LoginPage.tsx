@@ -21,6 +21,7 @@ import {
   AlertCircle,
   ArrowLeft,
   Landmark,
+  Camera,
 } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
@@ -28,11 +29,17 @@ export const LoginPage: React.FC = () => {
     activeSector,
     setActiveSector,
     loginAsSector,
+    loginAsRole,
+    userRole,
     setCurrentView,
     showToast,
   } = useApp();
 
-  const [selectedSector, setSelectedSector] = useState<SectorType>(activeSector || 'highways');
+  type LoginTarget = SectorType | 'field_officer';
+
+  const [selectedTarget, setSelectedTarget] = useState<LoginTarget>(
+    userRole === 'field_officer' ? 'field_officer' : activeSector || 'highways'
+  );
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -46,15 +53,19 @@ export const LoginPage: React.FC = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const currentSectorConfig = SECTORS_CONFIG[selectedSector];
+  const isFieldOfficer = selectedTarget === 'field_officer';
+  const currentSectorConfig = !isFieldOfficer ? SECTORS_CONFIG[selectedTarget] : null;
 
-  // Sync inputs when sector changes
+  // Sync inputs when target changes
   useEffect(() => {
-    if (currentSectorConfig) {
+    if (selectedTarget === 'field_officer') {
+      setUsername('field.officer@nic.in');
+      setPassword('Bhoomi#Field2026');
+    } else if (currentSectorConfig) {
       setUsername(currentSectorConfig.demoUsername);
       setPassword(currentSectorConfig.demoPassword);
     }
-  }, [selectedSector]);
+  }, [selectedTarget]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,7 +79,11 @@ export const LoginPage: React.FC = () => {
     }
 
     setIsLoading(true);
-    loginAsSector(selectedSector, username);
+    if (selectedTarget === 'field_officer') {
+      loginAsRole('field_officer', username);
+    } else {
+      loginAsSector(selectedTarget, username);
+    }
     setIsLoading(false);
   };
 
@@ -108,8 +123,9 @@ export const LoginPage: React.FC = () => {
     showToast('Password reset successfully. You can now sign in.', 'success');
   };
 
-  const getSectorIcon = (sec: SectorType) => {
-    switch (sec) {
+  const getTargetIcon = (tgt: LoginTarget) => {
+    if (tgt === 'field_officer') return Camera;
+    switch (tgt) {
       case 'highways':
         return Truck;
       case 'railways':
@@ -127,7 +143,7 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  const SectorIcon = getSectorIcon(selectedSector);
+  const TargetIcon = getTargetIcon(selectedTarget);
 
   return (
     <div className="min-h-[80vh] flex flex-col justify-center items-center py-6 px-4">
@@ -155,7 +171,7 @@ export const LoginPage: React.FC = () => {
             </div>
             <div>
               <h1 className="text-xl font-bold text-slate-900 tracking-tight">
-                Sector Official Sign In
+                Official Sign In Portal
               </h1>
               <p className="text-xs text-slate-500 mt-0.5 font-medium">
                 BhoomiSetu National Land Acquisition & Management Portal
@@ -165,23 +181,23 @@ export const LoginPage: React.FC = () => {
         </div>
 
         <div className="p-6 sm:p-8 space-y-6">
-          {/* Step 1: Select Sector */}
+          {/* Step 1: Select Role / Sector */}
           <div className="space-y-2">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
-              1. Select Your Infrastructure / Administrative Sector
+              1. Select Your Administrative Role or Infrastructure Sector
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {(['highways', 'railways', 'power', 'urban', 'revenue', 'citizen'] as SectorType[]).map((secKey) => {
                 const sec = SECTORS_CONFIG[secKey];
-                const Icon = getSectorIcon(secKey);
-                const isSelected = selectedSector === secKey;
+                const Icon = getTargetIcon(secKey);
+                const isSelected = selectedTarget === secKey;
 
                 return (
                   <button
                     key={secKey}
                     type="button"
                     onClick={() => {
-                      setSelectedSector(secKey);
+                      setSelectedTarget(secKey);
                       setActiveSector(secKey);
                     }}
                     className={`p-2.5 rounded-xl border text-left flex items-center gap-2.5 transition-all ${
@@ -204,22 +220,75 @@ export const LoginPage: React.FC = () => {
                   </button>
                 );
               })}
+
+              {/* Field Officer 7th Card */}
+              <button
+                type="button"
+                onClick={() => setSelectedTarget('field_officer')}
+                className={`p-2.5 rounded-xl border text-left flex items-center gap-2.5 transition-all sm:col-span-3 ${
+                  selectedTarget === 'field_officer'
+                    ? 'border-emerald-600 bg-emerald-50 text-emerald-950 ring-1 ring-emerald-600 font-bold shadow-2xs'
+                    : 'border-emerald-200/80 bg-emerald-50/40 hover:bg-emerald-50 text-slate-700'
+                }`}
+              >
+                <div
+                  className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
+                    selectedTarget === 'field_officer' ? 'bg-emerald-700 text-white' : 'bg-emerald-100 text-emerald-800'
+                  }`}
+                >
+                  <Camera className="w-3.5 h-3.5" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold block text-slate-900">Field Officer</span>
+                    <span className="text-[10px] font-semibold bg-emerald-100 text-emerald-900 px-1.5 py-0.2 rounded">
+                      Field Verification Suite
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-slate-600 block truncate">
+                    DGPS RTK Survey Rover, Boundary Demarcation & Evidence Upload
+                  </span>
+                </div>
+              </button>
             </div>
           </div>
 
-          {/* Active Sector Summary Pill */}
+          {/* Active Target Summary Pill */}
           <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-3 text-xs">
-            <SectorIcon className="w-5 h-5 text-blue-700 shrink-0" />
+            <TargetIcon className="w-5 h-5 text-blue-700 shrink-0" />
             <div className="min-w-0 flex-1">
-              <span className="font-bold text-slate-900 block">{currentSectorConfig.name}</span>
+              <span className="font-bold text-slate-900 block">
+                {isFieldOfficer ? 'Field Officer & Cadastral Surveyor' : currentSectorConfig?.name}
+              </span>
               <span className="text-[11px] text-slate-500 block truncate">
-                {currentSectorConfig.department}
+                {isFieldOfficer
+                  ? 'Department of Survey, Settlement & Land Records (Govt of Telangana)'
+                  : currentSectorConfig?.department}
               </span>
             </div>
             <span className="px-2 py-0.5 rounded bg-blue-100 text-blue-900 font-bold text-[10px] shrink-0 border border-blue-200">
-              {currentSectorConfig.badge}
+              {isFieldOfficer ? 'DGPS Rover FO-7842' : currentSectorConfig?.badge}
             </span>
           </div>
+
+          {/* Quick Demo Switch helper for Field Officer */}
+          {!isFieldOfficer && (
+            <div className="flex items-center justify-between p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200 text-xs">
+              <div className="flex items-center gap-2 text-emerald-900">
+                <Camera className="w-4 h-4 text-emerald-700" />
+                <span className="font-medium text-[11px]">Need on-ground inspection access?</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedTarget('field_officer');
+                }}
+                className="text-xs font-bold text-emerald-800 hover:text-emerald-950 underline"
+              >
+                Switch to Field Officer
+              </button>
+            </div>
+          )}
 
           {/* Step 2: Username & Password Form */}
           <form onSubmit={handleLogin} className="space-y-4">
@@ -279,13 +348,25 @@ export const LoginPage: React.FC = () => {
             {/* Quick 1-Click Demo Credentials Pill */}
             <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs flex items-center justify-between gap-2">
               <span className="text-[11px] text-slate-500">
-                Demo: <strong>{currentSectorConfig.demoUsername}</strong> / <strong>{currentSectorConfig.demoPassword}</strong>
+                Demo:{' '}
+                <strong>
+                  {isFieldOfficer ? 'field.officer@nic.in' : currentSectorConfig?.demoUsername}
+                </strong>{' '}
+                /{' '}
+                <strong>
+                  {isFieldOfficer ? 'Bhoomi#Field2026' : currentSectorConfig?.demoPassword}
+                </strong>
               </span>
               <button
                 type="button"
                 onClick={() => {
-                  setUsername(currentSectorConfig.demoUsername);
-                  setPassword(currentSectorConfig.demoPassword);
+                  if (isFieldOfficer) {
+                    setUsername('field.officer@nic.in');
+                    setPassword('Bhoomi#Field2026');
+                  } else if (currentSectorConfig) {
+                    setUsername(currentSectorConfig.demoUsername);
+                    setPassword(currentSectorConfig.demoPassword);
+                  }
                   showToast('Pre-filled test credentials', 'info');
                 }}
                 className="text-[11px] font-bold text-blue-700 hover:underline shrink-0"
@@ -299,14 +380,20 @@ export const LoginPage: React.FC = () => {
               type="submit"
               id="login-submit-btn"
               disabled={isLoading}
-              className="w-full py-2.5 px-4 rounded-lg bg-blue-700 hover:bg-blue-800 text-white font-semibold text-xs shadow-2xs transition-all flex items-center justify-center gap-2"
+              className={`w-full py-2.5 px-4 rounded-lg text-white font-semibold text-xs shadow-2xs transition-all flex items-center justify-center gap-2 ${
+                isFieldOfficer ? 'bg-emerald-700 hover:bg-emerald-800' : 'bg-blue-700 hover:bg-blue-800'
+              }`}
             >
               {isLoading ? (
                 <span>Authenticating with BhoomiSetu...</span>
               ) : (
                 <>
                   <Lock className="w-3.5 h-3.5" />
-                  <span>Sign In to {currentSectorConfig.shortName} Dashboard</span>
+                  <span>
+                    {isFieldOfficer
+                      ? 'Sign In to Field Verification Suite'
+                      : `Sign In to ${currentSectorConfig?.shortName} Dashboard`}
+                  </span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </>
               )}
@@ -323,7 +410,8 @@ export const LoginPage: React.FC = () => {
               <div className="flex items-center gap-2">
                 <KeyRound className="w-4 h-4 text-blue-700" />
                 <h3 className="text-sm font-bold text-slate-900">
-                  Password Recovery: {currentSectorConfig.shortName}
+                  Password Recovery:{' '}
+                  {isFieldOfficer ? 'Field Officer Portal' : currentSectorConfig?.shortName}
                 </h3>
               </div>
               <button
@@ -341,7 +429,10 @@ export const LoginPage: React.FC = () => {
               <form onSubmit={handleSendOtp} className="space-y-3">
                 <p className="text-xs text-slate-600 leading-relaxed">
                   Enter your registered official email or mobile number linked to the{' '}
-                  <strong className="text-slate-900">{currentSectorConfig.name}</strong> portal.
+                  <strong className="text-slate-900">
+                    {isFieldOfficer ? 'Field Verification & Survey' : currentSectorConfig?.name}
+                  </strong>{' '}
+                  portal.
                 </p>
 
                 <div className="space-y-1">

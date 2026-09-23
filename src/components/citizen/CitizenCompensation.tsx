@@ -44,6 +44,7 @@ export const CitizenCompensation: React.FC = () => {
   const [showConsentModal, setShowConsentModal] = useState(false);
   const [showDisputeModal, setShowDisputeModal] = useState(false);
   const [disputeReason, setDisputeReason] = useState('');
+  const [localConsentGiven, setLocalConsentGiven] = useState(false);
 
   // Fallback parcel
   const parcel =
@@ -96,7 +97,10 @@ export const CitizenCompensation: React.FC = () => {
     parcel.compensation?.totalCompensation ||
     multipliedLandValue + assetsVal + solatium + interestAmount;
 
+  const consentGiven = Boolean(parcel.consentReceived || localConsentGiven);
+
   const handleEsignConsent = () => {
+    setLocalConsentGiven(true);
     submitConsent(parcel.id);
     setShowConsentModal(false);
     showToast('Aadhaar OTP verified. Award acceptance registered with Treasury CALA.', 'success');
@@ -261,7 +265,7 @@ CALA Seal             : DIGITAL-SEAL-VERIFIED-${parcel.id}
           </div>
 
           <div className="flex flex-col sm:flex-row md:flex-col gap-2.5 shrink-0">
-            {parcel.consentReceived || consentGiven ? (
+            {parcel.consentReceived ? (
               <div className="px-4 py-2.5 rounded-xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-semibold flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                 <span>eSign Consent Verified</span>

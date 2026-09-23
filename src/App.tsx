@@ -56,6 +56,9 @@ const AppContent: React.FC = () => {
         if (userRole === 'citizen') {
           return <CitizenDashboard />;
         }
+        if (userRole === 'field_officer') {
+          return <FieldEvidenceUpload />;
+        }
 
         const renderActiveDashboard = () => {
           if (dashboardMode === 'sector') {
@@ -67,7 +70,6 @@ const AppContent: React.FC = () => {
             case 'state':
               return <StateDashboard />;
             case 'officer':
-            case 'field_officer':
               return <OfficerDashboard />;
             case 'admin':
             default:

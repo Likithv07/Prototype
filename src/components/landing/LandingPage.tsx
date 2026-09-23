@@ -24,10 +24,11 @@ import {
   Landmark,
   FileText,
   BadgeCheck,
+  Camera,
 } from 'lucide-react';
 
 export const LandingPage: React.FC = () => {
-  const { setCurrentView, setActiveSector, loginAsSector, setSelectedParcelId, showToast } = useApp();
+  const { setCurrentView, setActiveSector, loginAsSector, loginAsRole, setSelectedParcelId, showToast } = useApp();
   const [trackingId, setTrackingId] = useState('');
   const [searchResult, setSearchResult] = useState<any | null>(null);
 
@@ -299,6 +300,47 @@ export const LandingPage: React.FC = () => {
               </div>
             );
           })}
+
+          {/* Field Officer Portal Card */}
+          <div
+            onClick={() => loginAsRole('field_officer')}
+            className="p-5 rounded-xl bg-gradient-to-br from-emerald-50/50 to-white border border-emerald-300 hover:border-emerald-500 card-hover flex flex-col justify-between cursor-pointer group shadow-2xs"
+          >
+            <div>
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-900 border border-emerald-200">
+                  DGPS Rover FO-7842
+                </span>
+                <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center group-hover:bg-emerald-700 group-hover:text-white transition-colors">
+                  <Camera className="w-4 h-4" />
+                </div>
+              </div>
+
+              <h3 className="text-sm font-bold text-slate-900 group-hover:text-emerald-900 transition-colors">
+                Field Officer Portal
+              </h3>
+              <span className="text-[11px] font-semibold text-emerald-700 block mt-0.5">
+                Department of Survey, Settlement & Land Records
+              </span>
+              <p className="text-xs text-slate-600 mt-2 leading-relaxed">
+                Mobile Field Verification, DGPS RTK cadastral boundary pegging, geotagged photographic evidence, and spot landowner identity verification.
+              </p>
+            </div>
+
+            <div className="mt-5 pt-3 border-t border-emerald-100">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  loginAsRole('field_officer');
+                }}
+                id="enter-portal-field-officer"
+                className="w-full py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold btn-hover flex items-center justify-center gap-1.5 shadow-2xs"
+              >
+                <span>Launch Field Verification Suite</span>
+                <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 

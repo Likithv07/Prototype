@@ -18,6 +18,7 @@ import {
   Compass,
   FileText,
   Calculator,
+  Camera,
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -27,6 +28,7 @@ export const Navbar: React.FC = () => {
     activeSector,
     setActiveSector,
     loginAsSector,
+    loginAsRole,
     isLoggedIn,
     loggedInUser,
     userRole,
@@ -211,21 +213,34 @@ export const Navbar: React.FC = () => {
                 )}
               </div>
 
-              {/* Sector Quick Switcher Dropdown */}
+              {/* Sector / Role Quick Switcher Dropdown */}
               <div className="relative">
                 <button
                   onClick={() => setShowSectorMenu(!showSectorMenu)}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:text-slate-900 hover:bg-slate-50 shadow-2xs"
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-semibold shadow-2xs ${
+                    userRole === 'field_officer'
+                      ? 'border-emerald-300 bg-emerald-50 text-emerald-950 hover:bg-emerald-100'
+                      : 'border-slate-200 bg-white text-slate-700 hover:text-slate-900 hover:bg-slate-50'
+                  }`}
                 >
-                  <SectorIcon className="w-3.5 h-3.5 text-blue-700" />
-                  <span className="hidden sm:inline">{currentSectorConfig.shortName}</span>
+                  {userRole === 'field_officer' ? (
+                    <>
+                      <Camera className="w-3.5 h-3.5 text-emerald-700" />
+                      <span className="hidden sm:inline">Field Officer (Survey)</span>
+                    </>
+                  ) : (
+                    <>
+                      <SectorIcon className="w-3.5 h-3.5 text-blue-700" />
+                      <span className="hidden sm:inline">{currentSectorConfig?.shortName || 'Sector'}</span>
+                    </>
+                  )}
                   <ChevronDown className="w-3 h-3 text-slate-400" />
                 </button>
 
                 {showSectorMenu && (
-                  <div className="absolute right-0 mt-2 w-56 rounded-xl bg-white border border-slate-200 p-2 shadow-lg z-50 text-xs">
+                  <div className="absolute right-0 mt-2 w-64 rounded-xl bg-white border border-slate-200 p-2 shadow-lg z-50 text-xs">
                     <div className="px-2 py-1 text-[10px] uppercase font-bold tracking-wider text-slate-500 border-b border-slate-100 mb-1">
-                      Switch Sector
+                      Switch Sector / Role
                     </div>
                     {(['highways', 'railways', 'power', 'urban', 'revenue', 'citizen'] as SectorType[]).map((s) => {
                       const sec = SECTORS_CONFIG[s];
@@ -238,7 +253,7 @@ export const Navbar: React.FC = () => {
                             setShowSectorMenu(false);
                           }}
                           className={`w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-left transition-all btn-hover ${
-                            activeSector === s
+                            userRole !== 'field_officer' && activeSector === s
                               ? 'bg-blue-50 text-blue-900 font-bold shadow-2xs'
                               : 'text-slate-700 hover:bg-slate-50 font-medium'
                           }`}
@@ -248,6 +263,27 @@ export const Navbar: React.FC = () => {
                         </button>
                       );
                     })}
+
+                    {/* Field Officer in dropdown */}
+                    <div className="border-t border-slate-100 mt-1 pt-1">
+                      <button
+                        onClick={() => {
+                          loginAsRole('field_officer');
+                          setShowSectorMenu(false);
+                        }}
+                        className={`w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-left transition-all btn-hover ${
+                          userRole === 'field_officer'
+                            ? 'bg-emerald-50 text-emerald-950 font-bold shadow-2xs'
+                            : 'text-emerald-800 hover:bg-emerald-50/60 font-medium'
+                        }`}
+                      >
+                        <Camera className="w-4 h-4 text-emerald-700" />
+                        <div className="flex-1 min-w-0">
+                          <span className="block font-semibold">Field Officer</span>
+                          <span className="text-[10px] text-slate-500 block">Field Verification & DGPS</span>
+                        </div>
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>

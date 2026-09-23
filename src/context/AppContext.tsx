@@ -61,6 +61,7 @@ interface AppContextType {
   loggedInUser: string | null;
   setLoggedInUser: (username: string | null) => void;
   loginAsSector: (sector: SectorType, username?: string) => void;
+  loginAsRole: (role: UserRole, username?: string) => void;
   logout: () => void;
   currentView: AppView;
   setCurrentView: (view: AppView) => void;
@@ -209,6 +210,31 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setLoggedInUser(username || defaultUsers[sector]);
     setCurrentView('dashboard');
     showToast(`Authenticated: ${sectorNames[sector]}`, 'success');
+  };
+
+  const loginAsRole = (role: UserRole, username?: string) => {
+    setUserRole(role);
+    setIsLoggedIn(true);
+    const roleDefaultUsers: Record<UserRole, string> = {
+      central: 'Er. Sandeep Verma (Chief Project Officer, NHAI)',
+      state: 'Sunita Deshmukh, IAS (State Land Commissioner)',
+      officer: 'Ravi Kumar, IAS (District Collector & LAO)',
+      field_officer: 'Vikramaditya Rao (Senior Field Officer & Surveyor)',
+      citizen: 'Rajesh Kumar (Landowner, Survey #145/2)',
+      admin: 'SysAdmin Root (NIC Command)',
+    };
+    setLoggedInUser(username || roleDefaultUsers[role] || 'Field Officer');
+    if (role === 'field_officer') {
+      setCurrentView('field_upload'); // Directly open Field Verification suite
+    } else if (role === 'citizen') {
+      setCurrentView('dashboard');
+    } else {
+      setCurrentView('dashboard');
+    }
+    showToast(
+      `Authenticated as ${role === 'field_officer' ? 'Field Officer • Mobile Field Verification Suite Active' : role}`,
+      'success'
+    );
   };
 
   const logout = () => {
@@ -558,6 +584,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         loggedInUser,
         setLoggedInUser,
         loginAsSector,
+        loginAsRole,
         logout,
         currentView,
         setCurrentView,

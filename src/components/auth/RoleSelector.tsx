@@ -15,7 +15,7 @@ import {
 import { UserRole } from '../../types';
 
 export const RoleSelector: React.FC = () => {
-  const { setUserRole, setCurrentView, showToast } = useApp();
+  const { setUserRole, setCurrentView, showToast, loginAsRole } = useApp();
 
   const portals: {
     role: UserRole;
@@ -121,6 +121,10 @@ export const RoleSelector: React.FC = () => {
   ];
 
   const handleSelectRole = (role: UserRole) => {
+    if (role === 'field_officer') {
+      loginAsRole('field_officer');
+      return;
+    }
     setUserRole(role);
     setCurrentView('login');
   };

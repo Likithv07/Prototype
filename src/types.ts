@@ -260,11 +260,16 @@ export interface AffectedFamily {
   village: string;
   district: string;
   familyMembersCount: number;
-  affectedType: 'Agricultural' | 'Homestead & Land' | 'Commercial' | 'Tenant';
-  relocationStatus: 'Rehabilitated' | 'Pending Rehabilitation' | 'Allotment in Progress';
-  benefits: string;
-  financialPackageLakhs: number;
-  status: 'Active' | 'Disbursed' | 'Under Assessment';
+  category?: string;
+  affectedType?: 'Agricultural' | 'Homestead & Land' | 'Commercial' | 'Tenant';
+  relocationStatus?: 'Rehabilitated' | 'Pending Rehabilitation' | 'Allotment in Progress';
+  benefits?: string;
+  financialPackageLakhs?: number;
+  status?: 'Active' | 'Disbursed' | 'Under Assessment';
+  rehabilitationStatus?: string;
+  homesteadAllottedUnit?: string;
+  subsistenceAllowancePaid?: number;
+  skillTrainingEnrolledTrade?: string;
 }
 
 export interface StateData {
