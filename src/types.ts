@@ -4,7 +4,8 @@ export type SectorType =
   | 'power'
   | 'urban'
   | 'revenue'
-  | 'citizen';
+  | 'citizen'
+  | 'field_officer';
 
 export interface SectorInfo {
   id: SectorType;

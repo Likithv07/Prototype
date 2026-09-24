@@ -15,7 +15,13 @@ import {
 import { UserRole } from '../../types';
 
 export const RoleSelector: React.FC = () => {
-  const { setUserRole, setCurrentView, showToast, loginAsRole } = useApp();
+  const {
+    setUserRole,
+    setActiveSector,
+    setCurrentView,
+    showToast,
+    loginAsRole,
+  } = useApp();
 
   const portals: {
     role: UserRole;
@@ -126,6 +132,17 @@ export const RoleSelector: React.FC = () => {
       return;
     }
     setUserRole(role);
+    if (role === 'field_officer') {
+      setActiveSector('field_officer');
+    } else if (role === 'citizen') {
+      setActiveSector('citizen');
+    } else if (role === 'officer') {
+      setActiveSector('revenue');
+    } else if (role === 'state') {
+      setActiveSector('urban');
+    } else if (role === 'central') {
+      setActiveSector('highways');
+    }
     setCurrentView('login');
   };
 

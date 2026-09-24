@@ -22,6 +22,8 @@ import {
   Landmark,
   Eye,
   Crosshair,
+  ClipboardList,
+  ArrowRight
 } from 'lucide-react';
 
 export const FieldEvidenceUpload: React.FC = () => {
@@ -49,6 +51,18 @@ export const FieldEvidenceUpload: React.FC = () => {
       ? loggedInUser
       : 'FO-TEL-7842 (Vikramaditya Rao)'
   );
+
+  React.useEffect(() => {
+    if (loggedInUser) {
+      setOfficerId(loggedInUser);
+    }
+  }, [loggedInUser]);
+
+  React.useEffect(() => {
+    if (selectedParcelId) {
+      setParcelId(selectedParcelId);
+    }
+  }, [selectedParcelId]);
 
   // Boundary pegging status checklist for current parcel
   const [boundaryPegs, setBoundaryPegs] = useState<Record<string, boolean>>({
@@ -391,6 +405,75 @@ SHA-256 Checksum: 0x8f4c718b29de41098b63a201fe9941da
           })}
         </div>
       </div>
+
+      {/* Active Field Verification Assignments */}
+      {fieldAssignments && fieldAssignments.length > 0 && (
+        <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <div className="flex items-center gap-2">
+              <ClipboardList className="w-5 h-5 text-blue-700" />
+              <div>
+                <h2 className="text-sm font-bold text-slate-900">
+                  Assigned Field Survey Tasks ({fieldAssignments.length})
+                </h2>
+                <p className="text-xs text-slate-500">
+                  Official on-ground inspection orders assigned to {officerId}
+                </p>
+              </div>
+            </div>
+            <span className="text-xs font-mono font-semibold px-2.5 py-1 rounded-lg bg-blue-50 text-blue-900 border border-blue-200 self-start sm:self-auto">
+              Trimble R12i GNSS Synced
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {fieldAssignments.map((asn) => {
+              const isSelected = parcelId === asn.parcelId;
+              return (
+                <div
+                  key={asn.id}
+                  onClick={() => {
+                    setParcelId(asn.parcelId);
+                    setSelectedParcelId(asn.parcelId);
+                    showToast(`Selected Survey Sy. ${asn.surveyNumber} (${asn.village})`, 'info');
+                  }}
+                  className={`p-3.5 rounded-xl border text-xs cursor-pointer transition-all ${
+                    isSelected
+                      ? 'border-blue-600 bg-blue-50/70 text-blue-950 ring-1 ring-blue-600 shadow-2xs'
+                      : 'border-slate-200 bg-slate-50/60 hover:bg-slate-100/80 text-slate-700'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="font-mono font-bold text-blue-900">{asn.parcelId}</span>
+                    <span
+                      className={`px-1.5 py-0.5 rounded text-[10px] font-bold uppercase ${
+                        asn.priority === 'High'
+                          ? 'bg-rose-100 text-rose-800'
+                          : 'bg-amber-100 text-amber-800'
+                      }`}
+                    >
+                      {asn.priority} Priority
+                    </span>
+                  </div>
+                  <p className="font-semibold text-slate-900 text-xs truncate">
+                    Sy {asn.surveyNumber} • {asn.landownerName}
+                  </p>
+                  <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                    {asn.village}, {asn.district}
+                  </p>
+                  <div className="mt-2 pt-2 border-t border-slate-200/80 flex items-center justify-between text-[11px]">
+                    <span className="text-slate-500">{asn.requiredTasks.length} tasks</span>
+                    <span className="font-semibold text-blue-700 flex items-center gap-0.5">
+                      {isSelected ? 'Active Target' : 'Select'}
+                      <ArrowRight className="w-3 h-3" />
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Upload Interface Form + GPS Satellite Lock */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

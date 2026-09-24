@@ -124,7 +124,7 @@ export const Sidebar: React.FC = () => {
     central: 'Central Authority',
     state: 'State Authority',
     officer: 'District LAO Portal',
-    field_officer: 'Field Mobile Unit',
+    field_officer: 'Field Officer Portal',
     citizen: 'Citizen Portal',
     admin: 'Command Console',
   };

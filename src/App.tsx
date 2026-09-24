@@ -56,6 +56,7 @@ const AppContent: React.FC = () => {
         if (userRole === 'citizen') {
           return <CitizenDashboard />;
         }
+
         if (userRole === 'field_officer') {
           return <FieldEvidenceUpload />;
         }
@@ -64,6 +65,7 @@ const AppContent: React.FC = () => {
           if (dashboardMode === 'sector') {
             return <SectorDashboard />;
           }
+
           switch (userRole) {
             case 'central':
               return <CentralDashboard />;
@@ -79,7 +81,6 @@ const AppContent: React.FC = () => {
 
         return (
           <div className="space-y-4">
-            {/* View Mode Switcher for Administrative Roles */}
             <div className="flex flex-wrap items-center justify-between gap-3 bg-white border border-slate-200/90 p-2.5 rounded-2xl shadow-2xs">
               <div className="flex items-center gap-1.5 bg-slate-100/90 p-1 rounded-xl border border-slate-200 text-xs">
                 <button
@@ -98,6 +99,7 @@ const AppContent: React.FC = () => {
                     ? 'District LAO Administration'
                     : 'Strategic Authority View'}
                 </button>
+
                 <button
                   onClick={() => setDashboardMode('sector')}
                   className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${
@@ -109,8 +111,14 @@ const AppContent: React.FC = () => {
                   Sector Operations (MoRTH / Railways / Power)
                 </button>
               </div>
+
               <div className="text-[11px] text-slate-500 font-medium px-2">
-                Active Console: <span className="text-slate-900 font-semibold">{dashboardMode === 'authority' ? 'Statutory Revenue Authority' : 'Line Ministry Operations'}</span>
+                Active Console:{' '}
+                <span className="text-slate-900 font-semibold">
+                  {dashboardMode === 'authority'
+                    ? 'Statutory Revenue Authority'
+                    : 'Line Ministry Operations'}
+                </span>
               </div>
             </div>
 

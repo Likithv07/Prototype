@@ -138,6 +138,8 @@ export const LoginPage: React.FC = () => {
         return ShieldCheck;
       case 'citizen':
         return UserCheck;
+      case 'field_officer':
+        return Camera;
       default:
         return Layers;
     }
@@ -187,7 +189,7 @@ export const LoginPage: React.FC = () => {
               1. Select Your Administrative Role or Infrastructure Sector
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {(['highways', 'railways', 'power', 'urban', 'revenue', 'citizen'] as SectorType[]).map((secKey) => {
+              {(['highways', 'railways', 'power', 'urban', 'revenue', 'citizen', 'field_officer'] as SectorType[]).map((secKey) => {
                 const sec = SECTORS_CONFIG[secKey];
                 const Icon = getTargetIcon(secKey);
                 const isSelected = selectedTarget === secKey;

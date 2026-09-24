@@ -32,6 +32,7 @@ import {
   RefreshCw,
   Landmark,
   BadgeCheck,
+  Camera,
 } from 'lucide-react';
 
 export const SectorDashboard: React.FC = () => {
@@ -65,8 +66,12 @@ export const SectorDashboard: React.FC = () => {
       urban: 'state',
       revenue: 'officer',
       citizen: 'citizen',
+      field_officer: 'field_officer',
     };
     setUserRole(roleMapping[s]);
+    if (s === 'field_officer') {
+      setCurrentView('field_upload');
+    }
     showToast(`Switched view to ${SECTORS_CONFIG[s].name}`, 'info');
   };
 
@@ -88,6 +93,8 @@ export const SectorDashboard: React.FC = () => {
         return ShieldCheck;
       case 'citizen':
         return UserCheck;
+      case 'field_officer':
+        return Camera;
       default:
         return Layers;
     }
@@ -126,7 +133,7 @@ export const SectorDashboard: React.FC = () => {
           <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
             <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl p-1 text-xs">
               <span className="px-2 text-slate-500 font-medium hidden sm:inline">Switch:</span>
-              {(['highways', 'railways', 'power', 'urban', 'revenue', 'citizen'] as SectorType[]).map((s) => (
+              {(['highways', 'railways', 'power', 'urban', 'revenue', 'citizen', 'field_officer'] as SectorType[]).map((s) => (
                 <button
                   key={s}
                   onClick={() => handleSwitchSector(s)}

@@ -189,6 +189,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       urban: 'Urban Development & Industrial Corridors (NICDC)',
       revenue: 'State Revenue & District Administration (LAO)',
       citizen: 'Citizen & Landowner Portal',
+      field_officer: 'Field Verification & Survey Unit',
     };
     const defaultUsers: Record<SectorType, string> = {
       highways: 'Er. Sandeep Verma (Chief Project Officer, NHAI)',
@@ -197,6 +198,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       urban: 'Sunita Deshmukh, IAS (CEO, Industrial Corridor)',
       revenue: 'Ravi Kumar, IAS (District Collector & LAO)',
       citizen: 'Rajesh Kumar (Landowner, Survey #145/2)',
+      field_officer: 'Vikramaditya Rao (Senior Field Officer)',
     };
     const roleMapping: Record<SectorType, UserRole> = {
       highways: 'central',
@@ -205,10 +207,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       urban: 'state',
       revenue: 'officer',
       citizen: 'citizen',
+      field_officer: 'field_officer',
     };
     setUserRole(roleMapping[sector]);
     setLoggedInUser(username || defaultUsers[sector]);
-    setCurrentView('dashboard');
+    if (sector === 'field_officer') {
+      setCurrentView('field_upload');
+    } else {
+      setCurrentView('dashboard');
+    }
     showToast(`Authenticated: ${sectorNames[sector]}`, 'success');
   };
 

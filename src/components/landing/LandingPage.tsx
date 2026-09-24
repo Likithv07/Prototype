@@ -71,6 +71,8 @@ export const LandingPage: React.FC = () => {
         return ShieldCheck;
       case 'citizen':
         return UserCheck;
+      case 'field_officer':
+        return Camera;
       default:
         return Layers;
     }
@@ -157,8 +159,8 @@ export const LandingPage: React.FC = () => {
         {/* Key Statistics Cards in Clean Light Style */}
         <div className="mt-8 pt-6 border-t border-slate-100 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
           <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
-            <span className="text-2xl font-bold text-slate-900 block">6 Sectors</span>
-            <span className="text-xs text-slate-500 mt-1 block">Dedicated specialized portals</span>
+            <span className="text-2xl font-bold text-slate-900 block">7 Portals</span>
+            <span className="text-xs text-slate-500 mt-1 block">Dedicated sector & field units</span>
           </div>
           <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
             <span className="text-2xl font-bold text-blue-900 block">8,420+ km</span>
@@ -256,7 +258,7 @@ export const LandingPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {(['highways', 'railways', 'power', 'urban', 'revenue', 'citizen'] as SectorType[]).map((secKey) => {
+          {(['highways', 'railways', 'power', 'urban', 'revenue', 'citizen', 'field_officer'] as SectorType[]).map((secKey) => {
             const sec = SECTORS_CONFIG[secKey];
             const IconComponent = getSectorIcon(secKey);
             return (
