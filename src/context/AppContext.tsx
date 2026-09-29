@@ -116,6 +116,8 @@ interface AppContextType {
   verifyFieldPhoto: (photoId: string) => void;
   rejectFieldPhoto: (photoId: string, reason?: string) => void;
   approveAllFieldPhotos: (parcelId?: string) => void;
+  isChatbotOpen: boolean;
+  setIsChatbotOpen: (open: boolean) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -123,6 +125,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [userRole, setUserRole] = useState<UserRole>('officer');
   const [activeSector, setInternalActiveSector] = useState<SectorType>('highways');
+  const [isChatbotOpen, setIsChatbotOpen] = useState<boolean>(false);
 
   const setActiveSector = (sector: SectorType) => {
     setInternalActiveSector(sector);
@@ -670,6 +673,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         verifyFieldPhoto,
         rejectFieldPhoto,
         approveAllFieldPhotos,
+        isChatbotOpen,
+        setIsChatbotOpen,
       }}
     >
       {children}

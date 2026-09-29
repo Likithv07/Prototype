@@ -109,12 +109,23 @@ const BOT_KNOWLEDGE: Record<string, { answerEn: string; answerHi: string; answer
 };
 
 interface CitizenAiChatbotProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
 export const CitizenAiChatbot: React.FC<CitizenAiChatbotProps> = ({ isOpen, onClose }) => {
-  const { setCurrentView, showToast } = useApp();
+  const { setCurrentView, showToast, isChatbotOpen, setIsChatbotOpen, userRole, landParcels, selectedParcelId } = useApp();
+  const effectiveIsOpen = isOpen !== undefined ? isOpen : isChatbotOpen;
+  const handleClose = onClose || (() => setIsChatbotOpen(false));
+
+  // Strictly restricted to Citizen Portal
+  if (userRole !== 'citizen') {
+    return null;
+  }
+
+  const citizenParcel =
+    landParcels.find((p) => p.id === selectedParcelId) || landParcels[0];
+
   const [language, setLanguage] = useState<'en' | 'hi' | 'te'>('en');
   const [isMinimized, setIsMinimized] = useState(false);
   const [inputText, setInputText] = useState('');
@@ -122,10 +133,10 @@ export const CitizenAiChatbot: React.FC<CitizenAiChatbotProps> = ({ isOpen, onCl
 
   const initialGreeting =
     language === 'hi'
-      ? 'नमस्ते! मैं भूमिमित्र (BhoomiMitra) हूँ - आपका भूमि अधिग्रहण एवं मुआवज़ा सहायक। आप अपनी ज़मीन, मुआवज़े की गणना या आधार ई-हस्ताक्षर के बारे में कोई भी प्रश्न पूछ सकते हैं।'
+      ? 'नमस्ते! मैं भूमिमित्र (BhoomiMitra) हूँ - नागरिक पोर्टल हेतु आपका भूमि अधिग्रहण एवं मुआवज़ा AI सहायक। आप अपनी ज़मीन, मुआवज़े की गणना, 100% सोलेशियम या आधार ई-हस्ताक्षर के बारे में कोई भी प्रश्न पूछ सकते हैं।'
       : language === 'te'
-      ? 'నమస్కారం! నేను భూమిమిత్ర (BhoomiMitra) - మీ భూసేకరణ మరియు పరిహార AI సహాయకుడిని. మీ భూమి సర్వే, పరిహారం లెక్కింపు లేదా ఆధార్ ఈ-సైన్ గురించి నన్ను ఏదైనా అడగవచ్చు.'
-      : 'Namaste! I am BhoomiMitra, your National Land Acquisition Citizen Assistant. Ask me anything regarding your land survey, RFCTLARR compensation calculation, or Aadhaar eSign status.';
+      ? 'నమస్కారం! నేను భూమిమిత్ర (BhoomiMitra) - సిటిజన్ పోర్టల్ కోసం మీ భూసేకరణ మరియు పరిహార AI సహాయకుడిని. మీ భూమి సర్వే, RFCTLARR పరిహారం లెక్కింపు లేదా ఆధార్ ఈ-సైన్ గురించి నన్ను ఏదైనా అడగవచ్చు.'
+      : 'Namaste! I am BhoomiMitra, your Citizen Portal National Land Acquisition AI Assistant. Ask me anything regarding your land survey, RFCTLARR 2013 compensation calculation, Solatium, or Aadhaar eSign status.';
 
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -146,9 +157,9 @@ export const CitizenAiChatbot: React.FC<CitizenAiChatbotProps> = ({ isOpen, onCl
     scrollToBottom();
   }, [messages, isTyping]);
 
-  if (!isOpen) return null;
+  if (!effectiveIsOpen) return null;
 
-  const handleSendMessage = (textToSend?: string) => {
+  const handleSendMessage = async (textToSend?: string) => {
     const query = textToSend || inputText;
     if (!query.trim()) return;
 
@@ -163,8 +174,73 @@ export const CitizenAiChatbot: React.FC<CitizenAiChatbotProps> = ({ isOpen, onCl
     setInputText('');
     setIsTyping(true);
 
-    // Identify intent
     const qLower = query.toLowerCase();
+
+    // 1. Try real backend Gemini API call with citizen case context and abort timeout
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 9000);
+
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: query,
+          language,
+          context: citizenParcel
+            ? {
+                landownerName: citizenParcel.landownerName,
+                surveyNumber: citizenParcel.surveyNumber,
+                areaAcres: citizenParcel.areaAcres,
+                landType: citizenParcel.landType,
+                projectName: citizenParcel.projectName,
+                village: citizenParcel.village,
+                district: citizenParcel.district,
+                totalCompensation: citizenParcel.totalCompensation,
+                consentStatus: citizenParcel.consentStatus,
+              }
+            : undefined,
+        }),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.reply) {
+          let quickAction = undefined;
+          if (qLower.includes('compensat') || qLower.includes('award') || qLower.includes('money') || qLower.includes('rate') || qLower.includes('मुआवज़') || qLower.includes('పరిహార')) {
+            quickAction = { label: 'View My Compensation Award', view: 'citizen_compensation' as const };
+          } else if (qLower.includes('sign') || qLower.includes('consent') || qLower.includes('aadhaar') || qLower.includes('आधार') || qLower.includes('ఈ-సైన్')) {
+            quickAction = { label: 'Complete Aadhaar eSign', view: 'consent' as const };
+          } else if (qLower.includes('grievance') || qLower.includes('object') || qLower.includes('dispute') || qLower.includes('शिकायत') || qLower.includes('ఫిర్యాదు')) {
+            quickAction = { label: 'File Statutory Grievance', view: 'grievance' as const };
+          } else if (qLower.includes('map') || qLower.includes('fmb') || qLower.includes('survey') || qLower.includes('నక్షా')) {
+            quickAction = { label: 'Open Cadastral FMB Map', view: 'citizen_land' as const };
+          } else if (qLower.includes('document') || qLower.includes('record') || qLower.includes('दस्तावेज़')) {
+            quickAction = { label: 'Open Documents Vault', view: 'documents' as const };
+          }
+
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: `bot-${Date.now()}`,
+              sender: 'bot',
+              text: data.reply,
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              quickAction,
+            },
+          ]);
+          setIsTyping(false);
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn('BhoomiMitra API request error, proceeding with statutory fallback knowledge:', err);
+    }
+
+    // 2. Intelligent statutory domain fallback if API is unreachable or times out
     setTimeout(() => {
       let botResponse: ChatMessage;
 
@@ -214,13 +290,12 @@ export const CitizenAiChatbot: React.FC<CitizenAiChatbotProps> = ({ isOpen, onCl
           quickAction: item.action,
         };
       } else {
-        // Fallback informative response
         const fallbackText =
           language === 'hi'
-            ? `आपके प्रश्न "${query}" के संबंध में:\n\nभूमि अधिग्रहण अधिनियम 2013 के अनुसार, आपके अधिकार सुरक्षित हैं। आप अपने सर्वे सं. 145/2 का विवरण देख सकते हैं, मुआवजा राशि की जांच कर सकते हैं या किसी भी विसंगति के लिए संयुक्त समाहर्ता (LAO) के समक्ष ऑनलाइन आपत्ति दर्ज कर सकते हैं।`
+            ? `आपके प्रश्न "${query}" के संबंध में:\n\nभूमि अधिग्रहण एवं पुनर्वास अधिनियम 2013 के अनुसार, आपके समस्त विधिक अधिकार पूर्णतः सुरक्षित हैं। सर्वे सं. 145/2 (2.5 एकड़) के लिए 100% सोलेशियम सहित कुल ₹72,25,000 की राशि स्वीकृत है। आप पोर्टल के माध्यम से सीधे मुआवज़ा आदेश देख सकते हैं या शिकायत दर्ज कर सकते हैं।`
             : language === 'te'
-            ? `మీ ప్రశ్న "${query}" గురించి:\n\nభూసేకరణ చట్టం 2013 ప్రకారం మీ హక్కులు రక్షించబడ్డాయి. మీరు మీ సర్వే వివరాలు, పరిహారం పత్రాలను తనిఖీ చేయవచ్చు లేదా ఏవైనా సందేహాలుంటే గ్రీవెన్స్ పోర్టల్ ద్వారా వెంటనే తెలియజేయవచ్చు.`
-            : `Regarding your query "${query}":\n\nUnder the statutory provisions of the RFCTLARR Act 2013, your survey particulars (Sy 145/2, 2.5 Acres) have completed Section 3D declaration. You are entitled to 100% Solatium plus statutory interest. For specific claims, you can inspect your award summary or file a grievance.`;
+            ? `మీ ప్రశ్న "${query}" గురించి:\n\nRFCTLARR చట్టం 2013 ప్రకారం మీ సర్వే నెం. 145/2 (2.5 ఎకరాలు) కు 100% సొలేషియంతో కలిపి ₹72,25,000 పరిహారం నిర్ణయించబడింది. మీరు పోర్టల్ ద్వారా పరిహార వివరాలు చూడవచ్చు లేదా నేరుగా ఆన్‌లైన్‌లో వినతిపత్రం దాఖలు చేయవచ్చు.`
+            : `Regarding your query "${query}":\n\nUnder the statutory provisions of the RFCTLARR Act 2013 & NH Act 1956, your survey particulars (Sy 145/2, 2.5 Acres) have completed Section 3D declaration. You are entitled to 100% Solatium plus statutory interest totaling ₹72,25,000. You can inspect your itemized valuation or file a formal inquiry directly on BhoomiSetu.`;
 
         botResponse = {
           id: `bot-${Date.now()}`,
@@ -233,7 +308,7 @@ export const CitizenAiChatbot: React.FC<CitizenAiChatbotProps> = ({ isOpen, onCl
 
       setMessages((prev) => [...prev, botResponse]);
       setIsTyping(false);
-    }, 600);
+    }, 400);
   };
 
   const handleResetChat = () => {
@@ -315,7 +390,7 @@ export const CitizenAiChatbot: React.FC<CitizenAiChatbotProps> = ({ isOpen, onCl
           </button>
 
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="p-1 hover:bg-white/10 rounded-md transition-colors"
             title="Close Chat"
           >
@@ -387,7 +462,7 @@ export const CitizenAiChatbot: React.FC<CitizenAiChatbotProps> = ({ isOpen, onCl
                           onClick={() => {
                             if (msg.quickAction) {
                               setCurrentView(msg.quickAction.view);
-                              onClose();
+                              handleClose();
                             }
                           }}
                           className="px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 text-xs font-semibold flex items-center gap-1.5 transition-colors"

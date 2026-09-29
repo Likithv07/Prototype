@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { StatusBadge } from '../common/StatusBadge';
-import { CitizenAiChatbot } from './CitizenAiChatbot';
 import {
   MapPin,
   Compass,
@@ -40,6 +39,7 @@ export const CitizenDashboard: React.FC = () => {
     isRefreshing,
     lastSyncedAt,
     grievances,
+    setIsChatbotOpen,
   } = useApp();
 
   // Fresh data refresh on component mount
@@ -52,7 +52,6 @@ export const CitizenDashboard: React.FC = () => {
     landParcels.find((p) => p.id === selectedParcelId) || landParcels[0];
 
   const [showSignModal, setShowSignModal] = useState(false);
-  const [showAiChatbot, setShowAiChatbot] = useState(false);
   const [aadhaarOtp, setAadhaarOtp] = useState('781923');
 
   // Filter grievances relevant to this parcel or citizen
@@ -273,7 +272,7 @@ Certified by: Competent Authority for Land Acquisition (CALA)
 
           {/* AI Chatbot Trigger Button */}
           <button
-            onClick={() => setShowAiChatbot(true)}
+            onClick={() => setIsChatbotOpen(true)}
             id="citizen-ask-ai-btn"
             className="px-3.5 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-semibold flex items-center gap-2 shadow-2xs btn-hover transition-colors cursor-pointer"
           >
@@ -738,23 +737,6 @@ Certified by: Competent Authority for Land Acquisition (CALA)
         </div>
       )}
 
-      {/* Floating AI Assistant Trigger Pill */}
-      <div className="fixed bottom-6 right-6 z-40">
-        <button
-          onClick={() => setShowAiChatbot(true)}
-          className="px-4 py-3 rounded-full bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 text-white shadow-xl hover:shadow-2xl flex items-center gap-2.5 transition-transform hover:scale-105 group border border-white/20 cursor-pointer"
-        >
-          <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">
-            <Bot className="w-4 h-4 text-white" />
-          </div>
-          <div className="text-left">
-            <span className="text-xs font-bold block leading-tight">BhoomiMitra AI</span>
-            <span className="text-[10px] text-blue-200 block leading-tight">Citizen Help Sahayak</span>
-          </div>
-          <Sparkles className="w-4 h-4 text-yellow-300 ml-1 animate-pulse" />
-        </button>
-      </div>
-
       {/* Aadhaar eSign OTP Modal */}
       {showSignModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/50 backdrop-blur-xs animate-in fade-in duration-200">
@@ -818,12 +800,6 @@ Certified by: Competent Authority for Land Acquisition (CALA)
           </div>
         </div>
       )}
-
-      {/* Citizen AI Chatbot Popup Modal */}
-      <CitizenAiChatbot
-        isOpen={showAiChatbot}
-        onClose={() => setShowAiChatbot(false)}
-      />
     </div>
   );
 };

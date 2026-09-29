@@ -18,6 +18,8 @@ import {
   FileText,
   Calculator,
   Camera,
+  Bot,
+  Sparkles,
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -36,6 +38,7 @@ export const Navbar: React.FC = () => {
     notifications,
     markNotificationRead,
     markAllNotificationsRead,
+    setIsChatbotOpen,
     showToast,
   } = useApp();
 
@@ -151,7 +154,22 @@ export const Navbar: React.FC = () => {
         )}
 
         {/* Right Corner Section */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Ask BhoomiMitra AI Assistant Button - Exclusively for Citizen Portal */}
+          {userRole === 'citizen' && (
+            <button
+              onClick={() => setIsChatbotOpen(true)}
+              id="navbar-bhoomimitra-ai-btn"
+              className="px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+              title="Ask BhoomiMitra AI Citizen Assistant"
+            >
+              <Bot className="w-3.5 h-3.5 text-blue-700" />
+              <span className="hidden sm:inline">Ask BhoomiMitra AI</span>
+              <span className="sm:hidden font-bold">AI</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            </button>
+          )}
+
           {/* If NOT logged in: Prominently Highlighted Login Button in the Right Corner */}
           {!isLoggedIn ? (
             <button

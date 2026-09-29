@@ -35,9 +35,11 @@ import { SectorDashboard } from './components/dashboards/SectorDashboard';
 import { AccessRestricted } from './components/common/AccessRestricted';
 import { ConsentPortal } from './components/consent/ConsentPortal';
 import { CitizenLandDemarcation } from './components/citizen/CitizenLandDemarcation';
+import { CitizenAiChatbot } from './components/citizen/CitizenAiChatbot';
+import { Bot, Sparkles } from 'lucide-react';
 
 const AppContent: React.FC = () => {
-  const { currentView, userRole } = useApp();
+  const { currentView, userRole, isChatbotOpen, setIsChatbotOpen } = useApp();
   const [dashboardMode, setDashboardMode] = React.useState<'authority' | 'sector'>('authority');
 
   // Render view based on state
@@ -228,6 +230,30 @@ const AppContent: React.FC = () => {
 
       {/* Global Toast Notification System */}
       <ToastContainer />
+
+      {/* BhoomiMitra AI Assistant Modal (Strictly for Citizen Portal) */}
+      {userRole === 'citizen' && <CitizenAiChatbot />}
+
+      {/* BhoomiMitra AI Floating Trigger Pill (Strictly for Citizen Portal, when chat is closed and not on login) */}
+      {userRole === 'citizen' && !isChatbotOpen && currentView !== 'login' && (
+        <div className="fixed bottom-6 right-6 z-40">
+          <button
+            onClick={() => setIsChatbotOpen(true)}
+            id="global-bhoomimitra-trigger-btn"
+            className="px-4 py-2.5 rounded-full bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 text-white shadow-xl hover:shadow-2xl flex items-center gap-2.5 transition-transform hover:scale-105 group border border-white/20 cursor-pointer"
+            title="Ask BhoomiMitra AI (Citizen Portal Assistant)"
+          >
+            <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">
+              <Bot className="w-4 h-4 text-white" />
+            </div>
+            <div className="text-left">
+              <span className="text-xs font-bold block leading-tight">BhoomiMitra AI</span>
+              <span className="text-[10px] text-blue-200 block leading-tight">Citizen Sahayak</span>
+            </div>
+            <Sparkles className="w-3.5 h-3.5 text-yellow-300 ml-1 animate-pulse" />
+          </button>
+        </div>
+      )}
     </div>
   );
 };
