@@ -244,7 +244,7 @@ export const Navbar: React.FC = () => {
                     <div className="px-2 py-1 text-[10px] uppercase font-bold tracking-wider text-slate-500 border-b border-slate-100 mb-1">
                       Switch Sector / Role
                     </div>
-                    {(['highways', 'railways', 'power', 'urban', 'revenue', 'citizen', 'field_officer'] as SectorType[]).map((s) => {
+                    {(['highways', 'railways', 'power', 'urban', 'revenue', 'citizen'] as SectorType[]).map((s) => {
                       const sec = SECTORS_CONFIG[s];
                       const IconComp = getSectorIcon(s);
                       return (
@@ -273,7 +273,7 @@ export const Navbar: React.FC = () => {
                               setCurrentView('dashboard');
                             }
 
-                            showToast(Active sector set to , 'info');
+                            showToast(`Active sector set to ${sec.name}`, 'info');
                           }}
                           className={`w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-left transition-all btn-hover ${
                             userRole !== 'field_officer' && activeSector === s

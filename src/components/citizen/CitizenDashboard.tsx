@@ -24,6 +24,8 @@ import {
   HelpCircle,
   Landmark,
   RefreshCw,
+  Award,
+  FolderLock,
 } from 'lucide-react';
 
 export const CitizenDashboard: React.FC = () => {
@@ -118,6 +120,93 @@ the Seal of the Collector & District Magistrate.
     URL.revokeObjectURL(url);
 
     showToast(`Downloaded Form 16-C Award Certificate for Survey No. ${citizenParcel.surveyNumber}`, 'success');
+  };
+
+  const handleDownloadLandApproval = () => {
+    const certText = `================================================================================
+GOVERNMENT OF INDIA - MINISTRY OF ROAD TRANSPORT & HIGHWAYS
+COMPETENT AUTHORITY FOR LAND ACQUISITION (CALA)
+FORM 11-A STATUTORY LAND ACQUISITION APPROVAL & DEMARCATION ORDER
+[Under Section 19(1) of RFCTLARR Act, 2013 & National Highways Act 1956]
+================================================================================
+APPROVAL ORDER REF     : CALA/REV/2026/F11A-${citizenParcel.surveyNumber.replace(/\//g, '')}
+LAND PARCEL IDENTIFIER : ${citizenParcel.id}
+SURVEY NUMBER          : ${citizenParcel.surveyNumber}
+REGISTERED BENEFICIARY : ${citizenParcel.landownerName}
+MASKED AADHAAR         : ${citizenParcel.landownerAadhaar || citizenParcel.maskedAadhaar}
+REVENUE VILLAGE        : ${citizenParcel.village}, Mandal: Ghatkesar, Dist: ${citizenParcel.district}
+LAND CLASSIFICATION    : ${citizenParcel.landType} (Title: Unencumbered Ancestral)
+ACQUIRED EXTENT        : ${citizenParcel.areaAcres} Acres
+INFRASTRUCTURE CORRIDOR: ${citizenParcel.projectName}
+
+================================================================================
+STATUTORY BOUNDARY DEMARCATION SCHEDULE
+================================================================================
+NORTH BOUNDARY : Survey No. 144 (Agricultural Land)
+SOUTH BOUNDARY : Proposed Service Road & Highway Corridor
+EAST BOUNDARY  : Survey No. 145/3
+WEST BOUNDARY  : Survey No. 145/1 (Village Cart Track)
+
+GROUND PEGS    : BP-01, BP-02, BP-03, BP-04 (DGPS RTK Fixed - 1.5cm precision)
+ENCUMBRANCES   : NIL (Certified by Sub-Registrar & Dharani Land Registry)
+ORDER CLEARANCE: Clear title sanctioned for transfer to NHAI upon compensation award.
+================================================================================
+SEAL OF THE COMPETENT AUTHORITY FOR LAND ACQUISITION (CALA)
+Digitally Signed by: Ravi Kumar, IAS (District Collector & LAO)
+Date of Issue      : 08 Mar 2026
+================================================================================`;
+
+    const blob = new Blob([certText], { type: 'text/plain;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Form_11A_LandApproval_Sy_${citizenParcel.surveyNumber.replace(/\//g, '_')}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    showToast(`Downloaded Form 11-A Land Approval Order for Survey No. ${citizenParcel.surveyNumber}`, 'success');
+  };
+
+  const handleDownloadProcessReport = () => {
+    const certText = `================================================================================
+GOVERNMENT OF INDIA - BHOOMISETU NATIONAL LAND PORTAL
+CITIZEN LAND ACQUISITION APPLICATION & PROCESS PROGRESS REPORT
+================================================================================
+APPLICATION DOSSIER ID : BHM-APP-2026-${citizenParcel.surveyNumber.replace(/\//g, '-')}
+BENEFICIARY NAME       : ${citizenParcel.landownerName}
+SURVEY NUMBER          : ${citizenParcel.surveyNumber}
+ACQUISITION CORRIDOR   : ${citizenParcel.projectName}
+LIFECYCLE STATUS       : STAGE 5 / 7 (AWARD DETERMINED & APPROVED)
+================================================================================
+MILESTONE AUDIT TRAIL & STATUTORY DATES
+--------------------------------------------------------------------------------
+[✓] STAGE 1: DPR Alignment & Preliminary Survey           : 10 Jan 2026 (Completed)
+[✓] STAGE 2: Section 3A Preliminary Gazette Issued        : 22 Jan 2026 (Completed)
+[✓] STAGE 3: Drone LiDAR & Joint Field Demarcation (JMVR) : 18 Feb 2026 (Completed)
+[✓] STAGE 4: Section 15(1) Objection Period Closure       : 28 Feb 2026 (No Disputed Claims)
+[✓] STAGE 5: Form 16-C Statutory Award Declaration        : 08 Mar 2026 (Sanctioned)
+[•] STAGE 6: PFMS Electronic DBT Disbursal to Bank        : IN PROGRESS (Treasury Queue)
+[ ] STAGE 7: Final Physical Site Handover (Possession)    : Target 15 Apr 2026
+================================================================================
+REVENUE NODAL OFFICER REMARKS:
+"Title deed, revenue 1-B extract, and joint spot measurement verified with landowner.
+Consent recorded and statutory award passed with zero deductions."
+Certified by: Competent Authority for Land Acquisition (CALA)
+================================================================================`;
+
+    const blob = new Blob([certText], { type: 'text/plain;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Application_Process_Report_Sy_${citizenParcel.surveyNumber.replace(/\//g, '_')}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    showToast(`Downloaded Application Process Report for Survey No. ${citizenParcel.surveyNumber}`, 'success');
   };
 
   const steps = [
@@ -480,6 +569,116 @@ the Seal of the Collector & District Magistrate.
               </div>
             );
           })}
+        </div>
+      </div>
+
+      {/* Citizen Personal Documents & Reports Section */}
+      <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-2xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 border-b border-slate-100 pb-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <FolderLock className="w-5 h-5 text-emerald-700" />
+              <h2 className="text-base font-bold text-slate-900">
+                My Official Records &amp; Clearance Certificates
+              </h2>
+            </div>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Certified land approval, compensation award, and application process reports for Survey No.{' '}
+              <strong className="text-slate-800 font-mono">{citizenParcel.surveyNumber}</strong>
+            </p>
+          </div>
+
+          <button
+            onClick={() => setCurrentView('documents')}
+            className="px-3.5 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-blue-700 hover:text-blue-900 flex items-center gap-1.5 transition-colors self-start sm:self-auto cursor-pointer"
+          >
+            <FileText className="w-3.5 h-3.5" />
+            <span>Open My Document Vault</span>
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Doc 1: Land Approval */}
+          <div className="p-4 rounded-xl border border-blue-200 bg-blue-50/40 hover:bg-blue-50/70 transition-colors flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-900 border border-blue-200">
+                  LAND APPROVAL
+                </span>
+                <ShieldCheck className="w-4 h-4 text-blue-700" />
+              </div>
+              <h3 className="font-bold text-xs text-slate-900 mb-1">
+                Land Acquisition Approval &amp; Demarcation Order (Form 11-A)
+              </h3>
+              <p className="text-[11px] text-slate-600 mb-3 leading-relaxed">
+                CALA issued statutory order verifying title clearance, boundary demarcation (BP-01 to BP-04), and acquisition clearance.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 pt-2 border-t border-blue-200/60">
+              <button
+                onClick={handleDownloadLandApproval}
+                className="w-full py-1.5 px-2.5 rounded-lg bg-white hover:bg-blue-100 text-blue-900 border border-blue-200 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
+              >
+                <Download className="w-3.5 h-3.5 text-blue-700" />
+                <span>Download Order</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Doc 2: Compensation Report */}
+          <div className="p-4 rounded-xl border border-emerald-200 bg-emerald-50/40 hover:bg-emerald-50/70 transition-colors flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-900 border border-emerald-200">
+                  COMPENSATION AWARD
+                </span>
+                <ShieldCheck className="w-4 h-4 text-emerald-700" />
+              </div>
+              <h3 className="font-bold text-xs text-slate-900 mb-1">
+                Form 16-C Statutory Compensation Award Certificate
+              </h3>
+              <p className="text-[11px] text-slate-600 mb-3 leading-relaxed">
+                Full legal determination of ₹{(citizenParcel.totalCompensation || 7225000).toLocaleString('en-IN')}, 100% solatium, tree valuation, and PFMS DBT mandate.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 pt-2 border-t border-emerald-200/60">
+              <button
+                onClick={handleDownloadForm16C}
+                className="w-full py-1.5 px-2.5 rounded-lg bg-white hover:bg-emerald-100 text-emerald-950 border border-emerald-200 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
+              >
+                <Download className="w-3.5 h-3.5 text-emerald-700" />
+                <span>Download Award</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Doc 3: Application Process Report */}
+          <div className="p-4 rounded-xl border border-indigo-200 bg-indigo-50/40 hover:bg-indigo-50/70 transition-colors flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-indigo-100 text-indigo-900 border border-indigo-200">
+                  PROCESS REPORT
+                </span>
+                <Clock className="w-4 h-4 text-indigo-700" />
+              </div>
+              <h3 className="font-bold text-xs text-slate-900 mb-1">
+                Land Acquisition Application &amp; Process Report
+              </h3>
+              <p className="text-[11px] text-slate-600 mb-3 leading-relaxed">
+                Audit trail from Stage 1 DPR alignment, Section 3A, JMVR field inspection, to compensation disbursement.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 pt-2 border-t border-indigo-200/60">
+              <button
+                onClick={handleDownloadProcessReport}
+                className="w-full py-1.5 px-2.5 rounded-lg bg-white hover:bg-indigo-100 text-indigo-900 border border-indigo-200 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
+              >
+                <Download className="w-3.5 h-3.5 text-indigo-700" />
+                <span>Download Report</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 

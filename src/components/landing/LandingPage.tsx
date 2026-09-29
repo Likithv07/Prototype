@@ -258,7 +258,7 @@ export const LandingPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {(['highways', 'railways', 'power', 'urban', 'revenue', 'citizen', 'field_officer'] as SectorType[]).map((secKey) => {
+          {(['highways', 'railways', 'power', 'urban', 'revenue', 'citizen'] as SectorType[]).map((secKey) => {
             const sec = SECTORS_CONFIG[secKey];
             const IconComponent = getSectorIcon(secKey);
             return (

@@ -132,9 +132,7 @@ export const RoleSelector: React.FC = () => {
       return;
     }
     setUserRole(role);
-    if (role === 'field_officer') {
-      setActiveSector('field_officer');
-    } else if (role === 'citizen') {
+    if (role === 'citizen') {
       setActiveSector('citizen');
     } else if (role === 'officer') {
       setActiveSector('revenue');

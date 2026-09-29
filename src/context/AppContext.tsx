@@ -114,6 +114,8 @@ interface AppContextType {
   calculateCompensation: (parcelId: string, calc: any) => void;
   submitConsent: (parcelId: string) => void;
   verifyFieldPhoto: (photoId: string) => void;
+  rejectFieldPhoto: (photoId: string, reason?: string) => void;
+  approveAllFieldPhotos: (parcelId?: string) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -131,6 +133,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       urban: 'state',
       revenue: 'officer',
       citizen: 'citizen',
+      field_officer: 'field_officer',
     };
     if (roleMapping[sector]) {
       setUserRole(roleMapping[sector]);
@@ -571,12 +574,44 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const verifyFieldPhoto = (photoId: string) => {
+    if (userRole !== 'field_officer') {
+      showToast('Field evidence verification is restricted to the Field Officer role.', 'warning');
+      return;
+    }
     setFieldPhotos((prev) =>
       prev.map((ph) =>
         ph.id === photoId ? { ...ph, status: 'Verified' as const } : ph
       )
     );
-    showToast(`Field Inspection photo ${photoId} verified by Revenue Inspector`, 'success');
+    showToast(`Field Inspection photo ${photoId} verified & approved by Field Officer`, 'success');
+  };
+
+  const rejectFieldPhoto = (photoId: string, reason?: string) => {
+    if (userRole !== 'field_officer') {
+      showToast('Field evidence rejection is restricted to the Field Officer role.', 'warning');
+      return;
+    }
+    setFieldPhotos((prev) =>
+      prev.map((ph) =>
+        ph.id === photoId ? { ...ph, status: 'Rejected' as const } : ph
+      )
+    );
+    showToast(`Field Inspection photo ${photoId} marked as Rejected: ${reason || 'Re-survey required'}`, 'warning');
+  };
+
+  const approveAllFieldPhotos = (parcelId?: string) => {
+    if (userRole !== 'field_officer') {
+      showToast('Field photo approvals are strictly restricted to Field Officers', 'warning');
+      return;
+    }
+    setFieldPhotos((prev) =>
+      prev.map((ph) =>
+        (!parcelId || ph.parcelId === parcelId) && ph.status !== 'Verified'
+          ? { ...ph, status: 'Verified' as const }
+          : ph
+      )
+    );
+    showToast('All pending field inspection photos verified & approved by Field Officer', 'success');
   };
 
   return (
@@ -633,6 +668,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         calculateCompensation,
         submitConsent,
         verifyFieldPhoto,
+        rejectFieldPhoto,
+        approveAllFieldPhotos,
       }}
     >
       {children}

@@ -36,6 +36,7 @@ export const GisMap: React.FC = () => {
     selectedParcelId,
     setSelectedParcelId,
     setCurrentView,
+    userRole,
     setUserRole,
     showToast,
   } = useApp();
@@ -823,17 +824,18 @@ export const GisMap: React.FC = () => {
                   <span>Award Approval</span>
                 </button>
 
-                <button
-                  onClick={() => {
-                    setUserRole('field_officer');
-                    setCurrentView('field_upload');
-                    showToast(`Open geotagged evidence for Sy ${selectedParcel.surveyNumber}`, 'info');
-                  }}
-                  className="px-3 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-2xs transition-colors"
-                >
-                  <Camera className="w-3.5 h-3.5 text-slate-500" />
-                  <span>Field Evidence</span>
-                </button>
+                {userRole === 'field_officer' && (
+                  <button
+                    onClick={() => {
+                      setCurrentView('field_upload');
+                      showToast(`Open geotagged evidence for Sy ${selectedParcel.surveyNumber}`, 'info');
+                    }}
+                    className="px-3 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-2xs transition-colors"
+                  >
+                    <Camera className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Field Evidence</span>
+                  </button>
+                )}
               </div>
 
               {/* Print / Export Cadastral Notice */}

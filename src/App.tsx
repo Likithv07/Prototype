@@ -158,8 +158,8 @@ const AppContent: React.FC = () => {
         return <CitizenLandDemarcation />;
 
       case 'field_upload':
-        if (userRole === 'citizen') {
-          return <AccessRestricted moduleName="DGPS Field Survey & Geotagged Evidence Upload" />;
+        if (userRole !== 'field_officer') {
+          return <AccessRestricted moduleName="Field Evidence & On-Ground Inspection" />;
         }
         return <FieldEvidenceUpload />;
 

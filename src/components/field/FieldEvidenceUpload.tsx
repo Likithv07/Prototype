@@ -687,14 +687,20 @@ SHA-256 Checksum: 0x8f4c718b29de41098b63a201fe9941da
             </div>
 
             {!landownerVerifiedSpot ? (
-              <button
-                type="button"
-                onClick={handleSpotLandownerVerify}
-                className="w-full py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
-              >
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>Confirm Landowner Physical Presence</span>
-              </button>
+              userRole === 'field_officer' ? (
+                <button
+                  type="button"
+                  onClick={handleSpotLandownerVerify}
+                  className="w-full py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>Confirm Landowner Physical Presence</span>
+                </button>
+              ) : (
+                <div className="p-2 rounded-lg bg-slate-100 text-slate-500 text-xs text-center font-medium">
+                  Field Officer authorization required to verify presence
+                </div>
+              )
             ) : (
               <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-semibold flex items-center gap-2">
                 <Check className="w-4 h-4 text-emerald-600" />
@@ -858,16 +864,20 @@ SHA-256 Checksum: 0x8f4c718b29de41098b63a201fe9941da
                     {isVerified ? (
                       <span className="text-[11px] text-emerald-800 font-semibold flex items-center gap-1">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>Verified by Revenue Inspector</span>
+                        <span>Verified & Approved by Field Officer</span>
                       </span>
-                    ) : (
+                    ) : userRole === 'field_officer' ? (
                       <button
                         onClick={() => verifyFieldPhoto(photo.id)}
                         className="w-full py-1.5 px-3 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
                       >
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>Confirm Revenue Verification</span>
+                        <span>Confirm Field Officer Approval</span>
                       </button>
+                    ) : (
+                      <span className="text-[11px] text-slate-400 italic">
+                        Field Officer approval required
+                      </span>
                     )}
                   </div>
                 </div>

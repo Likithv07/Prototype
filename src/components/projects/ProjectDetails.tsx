@@ -19,6 +19,7 @@ export const ProjectDetails: React.FC = () => {
     selectedProjectId,
     projects,
     setCurrentView,
+    userRole,
     setUserRole,
     showToast,
   } = useApp();
@@ -249,10 +250,9 @@ export const ProjectDetails: React.FC = () => {
                         Action Award Approval →
                       </button>
                     )}
-                    {isInProgress && stage.stageNumber === 3 && (
+                    {isInProgress && stage.stageNumber === 3 && userRole === 'field_officer' && (
                       <button
                         onClick={() => {
-                          setUserRole('field_officer');
                           setCurrentView('field_upload');
                         }}
                         className="px-3 py-1 rounded-lg bg-emerald-600 text-white text-xs font-bold shadow-2xs hover:bg-emerald-700 transition-colors"

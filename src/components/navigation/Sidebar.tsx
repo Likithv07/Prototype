@@ -74,7 +74,6 @@ export const Sidebar: React.FC = () => {
           { id: 'gis_map', label: 'GIS Map', icon: Compass },
           { id: 'compensation', label: 'Compensation', icon: Calculator, badge: 'Priority' },
           { id: 'documents', label: 'Documents', icon: FileText },
-          { id: 'field_upload', label: 'Field Verification', icon: Camera },
           { id: 'consent', label: 'Consent Verification', icon: FileCheck },
           { id: 'rr_dashboard', label: 'Affected Families & R&R', icon: Users },
           { id: 'timeline_monitoring', label: 'Timeline Monitoring', icon: Clock },
@@ -84,7 +83,7 @@ export const Sidebar: React.FC = () => {
 
       case 'field_officer':
         return [
-          { id: 'field_upload', label: 'Field Verification', icon: Camera, badge: 'Rover Active' },
+          { id: 'field_upload', label: 'Field Evidence Upload', icon: Camera, badge: 'Rover Active' },
           { id: 'gis_map', label: 'Field GIS Demarcation', icon: Compass },
           { id: 'consent', label: 'Spot Landowner Consent', icon: FileCheck },
           { id: 'citizen_land', label: 'Cadastral FMB Map', icon: Compass },
