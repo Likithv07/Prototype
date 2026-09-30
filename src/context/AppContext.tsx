@@ -43,7 +43,8 @@ export type AppView =
   | 'timeline_monitoring'
   | 'rr_dashboard'
   | 'ai_analytics'
-  | 'scope';
+  | 'scope'
+  | 'citizen_rr_choices';
 
 interface ToastData {
   id: string;

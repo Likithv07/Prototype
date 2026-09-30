@@ -25,6 +25,7 @@ import {
   RefreshCw,
   Award,
   FolderLock,
+  Scale,
 } from 'lucide-react';
 
 export const CitizenDashboard: React.FC = () => {
@@ -288,6 +289,15 @@ Certified by: Competent Authority for Land Acquisition (CALA)
             <MessageSquarePlus className="w-3.5 h-3.5 text-slate-500" />
             <span>Raise a Grievance</span>
           </button>
+
+          {/* Compensation & R&R Choices Entry Button */}
+          <button
+            onClick={() => setCurrentView('citizen_rr_choices')}
+            className="px-3.5 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold flex items-center gap-1.5 shadow-2xs btn-hover transition-colors cursor-pointer"
+          >
+            <Scale className="w-3.5 h-3.5 text-emerald-200" />
+            <span>Compensation &amp; R&amp;R Choices</span>
+          </button>
         </div>
       </div>
 
@@ -363,6 +373,37 @@ Certified by: Competent Authority for Land Acquisition (CALA)
               {citizenGrievances.length > 0 ? `${citizenGrievances.length} Active Records` : 'Disputes & Corrections'}
             </span>
           </div>
+        </button>
+      </div>
+
+      {/* Compensation & R&R Choices Feature Card */}
+      <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50/50 to-white border border-emerald-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-start sm:items-center gap-3.5">
+          <div className="p-3 rounded-xl bg-emerald-700 text-white shadow-2xs shrink-0">
+            <Scale className="w-6 h-6" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 mb-0.5">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded border border-emerald-300">
+                RFCTLARR 2013 Choice Matrix
+              </span>
+              <span className="text-xs text-slate-500 font-medium">Section 31 &amp; Schedule II</span>
+            </div>
+            <h3 className="text-base font-bold text-slate-900">
+              Compensation &amp; R&amp;R Choices
+            </h3>
+            <p className="text-xs text-slate-600 mt-0.5">
+              Evaluate and choose between Full Monetary Compensation, Compensation + R&amp;R Package, or Alternative Rehabilitation Asset Package.
+            </p>
+          </div>
+        </div>
+
+        <button
+          onClick={() => setCurrentView('citizen_rr_choices')}
+          className="px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-2xs flex items-center gap-2 transition-colors btn-hover self-start sm:self-auto shrink-0 cursor-pointer"
+        >
+          <span>Compensation &amp; R&amp;R Choices</span>
+          <ChevronRight className="w-4 h-4" />
         </button>
       </div>
 

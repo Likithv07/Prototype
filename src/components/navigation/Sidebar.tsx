@@ -23,6 +23,7 @@ import {
   Bell,
   Building2,
   Landmark,
+  Scale,
 } from 'lucide-react';
 import { UserRole } from '../../types';
 
@@ -96,6 +97,7 @@ export const Sidebar: React.FC = () => {
           { id: 'dashboard', label: 'My Land Acquisition', icon: LayoutDashboard },
           { id: 'citizen_land', label: 'Land Demarcation (FMB)', icon: Compass },
           { id: 'citizen_compensation', label: 'My Compensation', icon: CreditCard, badge: '₹72.25L' },
+          { id: 'citizen_rr_choices', label: 'Compensation & R&R Choices', icon: Scale },
           { id: 'consent', label: 'Digital Consent eSign', icon: FileCheck },
           { id: 'grievance', label: 'Raise a Grievance', icon: MessageSquarePlus },
           { id: 'documents', label: 'My Documents', icon: FileText },

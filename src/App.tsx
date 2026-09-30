@@ -36,6 +36,7 @@ import { AccessRestricted } from './components/common/AccessRestricted';
 import { ConsentPortal } from './components/consent/ConsentPortal';
 import { CitizenLandDemarcation } from './components/citizen/CitizenLandDemarcation';
 import { CitizenAiChatbot } from './components/citizen/CitizenAiChatbot';
+import { CitizenChoiceMatrix } from './components/citizen/CitizenChoiceMatrix';
 import { Bot, Sparkles } from 'lucide-react';
 
 const AppContent: React.FC = () => {
@@ -191,6 +192,9 @@ const AppContent: React.FC = () => {
           return <AccessRestricted moduleName="AI Predictive Risk & Anomaly Engine" />;
         }
         return <AiAnalytics />;
+
+      case 'citizen_rr_choices':
+        return <CitizenChoiceMatrix />;
 
       default:
         return <LandingPage />;
